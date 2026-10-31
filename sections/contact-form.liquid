@@ -1,0 +1,43 @@
+<section class="section color-{{ section.settings.color_scheme }}" style="--pt: {{ section.settings.padding_top }}; --pb: {{ section.settings.padding_bottom }};">
+  <div class="page-width split" style="align-items: flex-start;">
+    <div class="stack" style="--gap: 16px;">
+      {%- if section.settings.heading != blank -%}<h2 class="h2">{{ section.settings.heading }}</h2>{%- endif -%}
+      {%- if section.settings.text != blank -%}<div class="rte lede">{{ section.settings.text }}</div>{%- endif -%}
+    </div>
+    <div>
+      {%- assign form_id = 'ContactForm-' | append: section.id -%}
+      {%- form 'contact', id: form_id -%}
+        {%- if form.posted_successfully? -%}
+          <p class="form-message" role="status">{{ 'contact.success' | t }}</p>
+        {%- elsif form.errors -%}
+          <div class="form-message" role="alert">{{ form.errors | default_errors }}</div>
+        {%- endif -%}
+        <div class="stack" style="--gap: 14px;">
+          <div class="form-row">
+            <label class="field" for="ContactName-{{ section.id }}">{{ 'contact.name' | t }}<input type="text" id="ContactName-{{ section.id }}" name="contact[name]" value="{{ form.name }}" autocomplete="name"></label>
+            <label class="field" for="ContactEmail-{{ section.id }}">{{ 'contact.email' | t }}<input type="email" id="ContactEmail-{{ section.id }}" name="contact[email]" value="{{ form.email }}" autocomplete="email" required></label>
+          </div>
+          <label class="field" for="ContactPhone-{{ section.id }}">{{ 'contact.phone' | t }}<input type="tel" id="ContactPhone-{{ section.id }}" name="contact[phone]" value="{{ form.phone }}" autocomplete="tel"></label>
+          <label class="field" for="ContactBody-{{ section.id }}">{{ 'contact.message' | t }}<textarea id="ContactBody-{{ section.id }}" name="contact[body]" required>{{ form.body }}</textarea></label>
+          <button type="submit" class="btn" style="align-self: flex-start;">{{ 'contact.send' | t }}</button>
+        </div>
+      {%- endform -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Contact form",
+  "class": "section-contact",
+  "settings": [
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Get in touch" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Questions about an order, wholesale or allergens? We reply within one working day.</p>" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Colour scheme", "default": "scheme-1" },
+    { "type": "header", "content": "Spacing" },
+    { "type": "select", "id": "padding_top", "label": "Top", "options": [ { "value": "0", "label": "None" }, { "value": "0.25", "label": "Small" }, { "value": "0.5", "label": "Medium" }, { "value": "0.75", "label": "Large" } ], "default": "0.5" },
+    { "type": "select", "id": "padding_bottom", "label": "Bottom", "options": [ { "value": "0", "label": "None" }, { "value": "0.25", "label": "Small" }, { "value": "0.5", "label": "Medium" }, { "value": "0.75", "label": "Large" } ], "default": "0.75" }
+  ],
+  "presets": [ { "name": "Contact form" } ]
+}
+{% endschema %}

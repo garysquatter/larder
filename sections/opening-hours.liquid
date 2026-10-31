@@ -1,0 +1,110 @@
+{%- liquid
+  assign hours = section.blocks | where: 'type', 'hours'
+  assign map_query = section.settings.address | strip_newlines | url_encode
+-%}
+<section class="section color-{{ section.settings.color_scheme }}" style="--pt: {{ section.settings.padding_top }}; --pb: {{ section.settings.padding_bottom }};">
+  <div class="page-width visit{% if section.settings.media == 'none' %} visit--single{% endif %}">
+    <div class="visit__info stack" style="--gap: 20px;">
+      {%- if section.settings.label != blank -%}<p class="label">{{ section.settings.label | escape }}</p>{%- endif -%}
+      {%- if section.settings.heading != blank -%}<h2 class="h2">{{ section.settings.heading }}</h2>{%- endif -%}
+      {%- if section.settings.text != blank -%}<div class="rte lede">{{ section.settings.text }}</div>{%- endif -%}
+
+      {%- if hours.size > 0 -%}
+        <div class="visit__block">
+          <h3 class="visit__title">{% render 'icon', name: 'clock', class: 'visit__icon' %}{{ section.settings.hours_heading | escape }}</h3>
+          <dl class="hours">
+            {%- for block in hours -%}
+              <div class="hours__row" {{ block.shopify_attributes }}>
+                <dt>{{ block.settings.days | escape }}</dt>
+                <dd>{{ block.settings.time | escape }}</dd>
+              </div>
+            {%- endfor -%}
+          </dl>
+          {%- if section.settings.hours_note != blank -%}<p class="muted visit__note">{{ section.settings.hours_note }}</p>{%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.address != blank or section.settings.phone != blank or section.settings.email != blank -%}
+        <div class="visit__block">
+          <h3 class="visit__title">{% render 'icon', name: 'pin', class: 'visit__icon' %}{{ section.settings.address_heading | escape }}</h3>
+          <address class="visit__address">
+            {%- if section.settings.address != blank -%}<span>{{ section.settings.address | escape | newline_to_br }}</span>{%- endif -%}
+            {%- if section.settings.phone != blank -%}<a href="tel:{{ section.settings.phone | remove: ' ' | escape }}">{{ section.settings.phone | escape }}</a>{%- endif -%}
+            {%- if section.settings.email != blank -%}<a href="mailto:{{ section.settings.email | escape }}">{{ section.settings.email | escape }}</a>{%- endif -%}
+          </address>
+          {%- if section.settings.address != blank -%}
+            <a class="btn btn--secondary btn--small" href="https://www.google.com/maps/dir/?api=1&destination={{ map_query }}" target="_blank" rel="noopener">{{ 'sections.visit.directions' | t }}</a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    {%- case section.settings.media -%}
+      {%- when 'map' -%}
+        {%- if section.settings.address != blank -%}
+          <div class="visit__media visit__map">
+            <iframe src="https://maps.google.com/maps?q={{ map_query }}&z=15&output=embed" title="{{ 'sections.visit.map_title' | t: address: section.settings.address | escape }}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          </div>
+        {%- endif -%}
+      {%- when 'image' -%}
+        <div class="visit__media">
+          {% render 'media', image: section.settings.image, ratio: '4 / 5', sizes: '(min-width: 990px) 50vw, 100vw', placeholder: 'lifestyle-1' %}
+        </div>
+    {%- endcase -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Opening hours & location",
+  "class": "section-visit",
+  "max_blocks": 10,
+  "settings": [
+    { "type": "text", "id": "label", "label": "Label", "default": "Visit us" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Come and say hello" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Pick up your order or grab something fresh from the counter.</p>" },
+    { "type": "header", "content": "Opening hours" },
+    { "type": "text", "id": "hours_heading", "label": "Heading", "default": "Opening hours" },
+    { "type": "inline_richtext", "id": "hours_note", "label": "Note", "default": "Bank holiday hours may vary." },
+    { "type": "header", "content": "Location" },
+    { "type": "text", "id": "address_heading", "label": "Heading", "default": "Find us" },
+    { "type": "textarea", "id": "address", "label": "Address", "default": "12 Market Street\nManchester M1 1AA" },
+    { "type": "text", "id": "phone", "label": "Phone" },
+    { "type": "text", "id": "email", "label": "Email" },
+    {
+      "type": "select", "id": "media", "label": "Show beside the details",
+      "options": [
+        { "value": "map", "label": "Map of the address" },
+        { "value": "image", "label": "Image" },
+        { "value": "none", "label": "Nothing" }
+      ],
+      "default": "map"
+    },
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Colour scheme", "default": "scheme-1" },
+    { "type": "header", "content": "Spacing" },
+    { "type": "select", "id": "padding_top", "label": "Top", "options": [ { "value": "0", "label": "None" }, { "value": "0.25", "label": "Small" }, { "value": "0.5", "label": "Medium" }, { "value": "0.75", "label": "Large" } ], "default": "0.5" },
+    { "type": "select", "id": "padding_bottom", "label": "Bottom", "options": [ { "value": "0", "label": "None" }, { "value": "0.25", "label": "Small" }, { "value": "0.5", "label": "Medium" }, { "value": "0.75", "label": "Large" } ], "default": "0.5" }
+  ],
+  "blocks": [
+    {
+      "type": "hours",
+      "name": "Opening hours row",
+      "settings": [
+        { "type": "text", "id": "days", "label": "Days", "default": "Monday – Friday" },
+        { "type": "text", "id": "time", "label": "Hours", "default": "8:00 – 18:00" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Opening hours & location",
+      "blocks": [
+        { "type": "hours", "settings": { "days": "Monday – Friday", "time": "8:00 – 18:00" } },
+        { "type": "hours", "settings": { "days": "Saturday", "time": "9:00 – 17:00" } },
+        { "type": "hours", "settings": { "days": "Sunday", "time": "Closed" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

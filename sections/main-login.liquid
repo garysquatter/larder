@@ -1,0 +1,34 @@
+<section class="section" style="--pt: .5; --pb: .75;">
+  <div class="page-width narrow stack" style="--gap: 20px;">
+    <h1 class="h1">{{ 'customer.login.title' | t }}</h1>
+    {%- form 'customer_login' -%}
+      <div class="stack" style="--gap: 14px;">
+        {%- if form.errors -%}<div class="form-message" role="alert">{{ form.errors | default_errors }}</div>{%- endif -%}
+        <label class="field" for="LoginEmail">{{ 'customer.fields.email' | t }}<input type="email" name="customer[email]" id="LoginEmail" autocomplete="email" required></label>
+        {%- if form.password_needed -%}
+          <label class="field" for="LoginPassword">{{ 'customer.fields.password' | t }}<input type="password" name="customer[password]" id="LoginPassword" autocomplete="current-password" required></label>
+          <a href="#recover" class="muted">{{ 'customer.login.forgot' | t }}</a>
+        {%- endif -%}
+        <button type="submit" class="btn btn--full">{{ 'customer.login.submit' | t }}</button>
+        <a href="{{ routes.account_register_url }}" class="link-underline" style="align-self: flex-start;">{{ 'customer.login.create' | t }}</a>
+      </div>
+    {%- endform -%}
+    <div id="recover" class="card" style="padding: 24px; margin-top: 16px;">
+      <h2 class="h4">{{ 'customer.recover.title' | t }}</h2>
+      {%- form 'recover_customer_password' -%}
+        {%- if form.posted_successfully? -%}<p class="form-message" role="status">{{ 'customer.recover.success' | t }}</p>{%- endif -%}
+        <div class="form-row" style="margin-top: 12px;">
+          <label class="field" for="RecoverEmail">{{ 'customer.fields.email' | t }}<input type="email" name="email" id="RecoverEmail" autocomplete="email" required></label>
+          <button type="submit" class="btn">{{ 'customer.recover.submit' | t }}</button>
+        </div>
+      {%- endform -%}
+    </div>
+    {%- if shop.checkout.guest_login -%}
+      {%- form 'guest_login' -%}<button type="submit" class="btn btn--secondary btn--full">{{ 'customer.login.guest' | t }}</button>{%- endform -%}
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Login", "settings": [] }
+{% endschema %}

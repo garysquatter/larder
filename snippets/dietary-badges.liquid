@@ -1,0 +1,27 @@
+{%- comment -%}
+  Dietary labels from the larder.dietary metafield (list of single line text, e.g. Vegan, Gluten free).
+  - product
+  - limit: max labels to show (default 3)
+  - size: 'small' (cards) or 'large' (product page)
+{%- endcomment -%}
+{%- assign diets = product.metafields.larder.dietary.value -%}
+{%- assign max = limit | default: 3 -%}
+{%- if diets != blank -%}
+  <ul class="diet{% if size == 'large' %} diet--large{% endif %}" role="list">
+    {%- for d in diets limit: max -%}
+      {%- assign h = d | handle -%}
+      <li class="diet__item">
+        {%- if h contains 'vegan' or h contains 'vegetarian' or h contains 'plant' or h contains 'veggie' -%}
+          {% render 'icon', name: 'leaf', class: 'diet__icon' %}
+        {%- elsif h contains 'gluten' or h contains 'wheat' -%}
+          {% render 'icon', name: 'wheat', class: 'diet__icon' %}
+        {%- elsif h contains 'spicy' or h contains 'hot' -%}
+          {% render 'icon', name: 'flame', class: 'diet__icon' %}
+        {%- else -%}
+          {% render 'icon', name: 'check', class: 'diet__icon' %}
+        {%- endif -%}
+        <span>{{ d | escape }}</span>
+      </li>
+    {%- endfor -%}
+  </ul>
+{%- endif -%}

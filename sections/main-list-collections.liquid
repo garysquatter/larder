@@ -1,0 +1,17 @@
+<section class="section" style="--pt: 0.4; --pb: 0.6;">
+  <div class="page-width">
+    <h1 class="h1" style="margin-bottom: 36px;">{{ page_title | escape }}</h1>
+    <div class="grid" style="--min: 240px;">
+      {%- for collection in collections -%}
+        <a href="{{ collection.url }}" class="collection-tile">
+          {% render 'media', image: collection.featured_image, ratio: '4 / 5', placeholder: 'collection-1', sizes: '(min-width: 990px) 25vw, 50vw' %}
+          <span class="collection-tile__name">{{ collection.title | escape }}<span aria-hidden="true">→</span></span>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Collections list page", "settings": [] }
+{% endschema %}

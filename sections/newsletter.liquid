@@ -1,0 +1,42 @@
+<section class="section color-{{ section.settings.color_scheme }}" style="--pt: {{ section.settings.padding_top }}; --pb: {{ section.settings.padding_bottom }};">
+  <div class="page-width split" style="gap: 32px;">
+    <div class="stack" style="--gap: 14px;">
+      {%- if section.settings.heading != blank -%}<h2 class="h2">{{ section.settings.heading }}</h2>{%- endif -%}
+      {%- if section.settings.text != blank -%}<p class="lede" style="color: inherit; opacity: .9;">{{ section.settings.text }}</p>{%- endif -%}
+    </div>
+    <div>
+      {%- assign form_id = 'Newsletter-' | append: section.id -%}
+      {%- form 'customer', id: form_id -%}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        <div class="form-row">
+          <label class="field" for="NewsletterEmail-{{ section.id }}">
+            {{ 'newsletter.email' | t }}
+            <input id="NewsletterEmail-{{ section.id }}" type="email" name="contact[email]" required autocomplete="email" placeholder="{{ 'newsletter.placeholder' | t }}" style="background: #fff; color: #161210; border-color: currentColor;">
+          </label>
+          <button type="submit" class="btn" style="min-height: 50px;">{{ 'newsletter.subscribe' | t }}</button>
+        </div>
+        {%- if form.posted_successfully? -%}
+          <p class="form-message" role="status">{{ 'newsletter.success' | t }}</p>
+        {%- elsif form.errors -%}
+          <p class="form-message" role="alert">{{ 'newsletter.error' | t }}</p>
+        {%- endif -%}
+      {%- endform -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "class": "section-newsletter",
+  "settings": [
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "First dibs on new batches" },
+    { "type": "inline_richtext", "id": "text", "label": "Text", "default": "New flavours, recipes and offers. No spam." },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Colour scheme", "default": "scheme-3" },
+    { "type": "header", "content": "Spacing" },
+    { "type": "select", "id": "padding_top", "label": "Top", "options": [ { "value": "0", "label": "None" }, { "value": "0.25", "label": "Small" }, { "value": "0.5", "label": "Medium" }, { "value": "0.75", "label": "Large" } ], "default": "0.5" },
+    { "type": "select", "id": "padding_bottom", "label": "Bottom", "options": [ { "value": "0", "label": "None" }, { "value": "0.25", "label": "Small" }, { "value": "0.5", "label": "Medium" }, { "value": "0.75", "label": "Large" } ], "default": "0.5" }
+  ],
+  "presets": [ { "name": "Newsletter" } ]
+}
+{% endschema %}

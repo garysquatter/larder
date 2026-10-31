@@ -1,0 +1,30 @@
+<section class="section quote-band color-{{ section.settings.color_scheme }}" style="--pt: {{ section.settings.padding_top }}; --pb: {{ section.settings.padding_bottom }};">
+  <div class="page-width">
+    <figure style="margin: 0;">
+      {%- if section.settings.show_icon -%}
+        <div style="display: flex; justify-content: center; margin-bottom: 28px; color: var(--color-accent);">{% render 'icon', name: 'wheat', class: 'promise__icon', stroke: 1.4 %}</div>
+      {%- endif -%}
+      <blockquote>{{ section.settings.quote }}</blockquote>
+      {%- if section.settings.author != blank -%}
+        <figcaption class="label" style="margin-top: 28px;">{{ section.settings.author | escape }}</figcaption>
+      {%- endif -%}
+    </figure>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Founder quote",
+  "class": "section-quote",
+  "settings": [
+    { "type": "inline_richtext", "id": "quote", "label": "Quote", "default": "A great sauce isn't complicated. Real chillies, real patience, and the courage to keep it simple." },
+    { "type": "text", "id": "author", "label": "Author", "default": "Founder name · Founder" },
+    { "type": "checkbox", "id": "show_icon", "label": "Show icon", "default": false },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Colour scheme", "default": "scheme-3" },
+    { "type": "header", "content": "Spacing" },
+    { "type": "select", "id": "padding_top", "label": "Top", "options": [ { "value": "0", "label": "None" }, { "value": "0.25", "label": "Small" }, { "value": "0.5", "label": "Medium" }, { "value": "0.75", "label": "Large" }, { "value": "1", "label": "Extra large" } ], "default": "0.75" },
+    { "type": "select", "id": "padding_bottom", "label": "Bottom", "options": [ { "value": "0", "label": "None" }, { "value": "0.25", "label": "Small" }, { "value": "0.5", "label": "Medium" }, { "value": "0.75", "label": "Large" }, { "value": "1", "label": "Extra large" } ], "default": "0.75" }
+  ],
+  "presets": [ { "name": "Founder quote" } ]
+}
+{% endschema %}

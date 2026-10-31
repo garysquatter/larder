@@ -1,0 +1,19 @@
+<section class="section" style="--pt: .5; --pb: .75;">
+  <div class="page-width narrow stack" style="--gap: 20px;">
+    <h1 class="h1">{{ 'customer.register.title' | t }}</h1>
+    {%- form 'create_customer' -%}
+      <div class="stack" style="--gap: 14px;">
+        {%- if form.errors -%}<div class="form-message" role="alert">{{ form.errors | default_errors }}</div>{%- endif -%}
+        <label class="field" for="RegFirst">{{ 'customer.fields.first_name' | t }}<input type="text" name="customer[first_name]" id="RegFirst" autocomplete="given-name"></label>
+        <label class="field" for="RegLast">{{ 'customer.fields.last_name' | t }}<input type="text" name="customer[last_name]" id="RegLast" autocomplete="family-name"></label>
+        <label class="field" for="RegEmail">{{ 'customer.fields.email' | t }}<input type="email" name="customer[email]" id="RegEmail" autocomplete="email" required></label>
+        <label class="field" for="RegPassword">{{ 'customer.fields.password' | t }}<input type="password" name="customer[password]" id="RegPassword" autocomplete="new-password" required></label>
+        <button type="submit" class="btn btn--full">{{ 'customer.register.submit' | t }}</button>
+      </div>
+    {%- endform -%}
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Register", "settings": [] }
+{% endschema %}

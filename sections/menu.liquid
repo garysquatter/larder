@@ -1,0 +1,111 @@
+<section class="section color-{{ section.settings.color_scheme }}" style="--pt: {{ section.settings.padding_top }}; --pb: {{ section.settings.padding_bottom }};">
+  <div class="page-width">
+    {%- if section.settings.heading != blank or section.settings.text != blank -%}
+      <div class="section-head{% if section.settings.align == 'center' %} section-head--center{% endif %}">
+        {%- if section.settings.heading != blank -%}<h2 class="h2">{{ section.settings.heading }}</h2>{%- endif -%}
+        {%- if section.settings.text != blank -%}<div class="rte muted">{{ section.settings.text }}</div>{%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="menu-list" style="--menu-cols: {{ section.settings.columns }};">
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'category' -%}
+            <div class="menu-list__category" {{ block.shopify_attributes }}>
+              <h3 class="h3">{{ block.settings.title | escape }}</h3>
+              {%- if block.settings.note != blank -%}<p class="muted">{{ block.settings.note }}</p>{%- endif -%}
+            </div>
+          {%- when 'item' -%}
+            <div class="menu-item" {{ block.shopify_attributes }}>
+              <div class="menu-item__head">
+                <h4 class="menu-item__name">
+                  {%- if block.settings.link != blank -%}<a href="{{ block.settings.link }}">{{ block.settings.name | escape }}</a>{%- else -%}{{ block.settings.name | escape }}{%- endif -%}
+                </h4>
+                <span class="menu-item__dots" aria-hidden="true"></span>
+                {%- if block.settings.price != blank -%}<span class="menu-item__price">{{ block.settings.price | escape }}</span>{%- endif -%}
+              </div>
+              {%- if block.settings.description != blank -%}<p class="menu-item__desc">{{ block.settings.description }}</p>{%- endif -%}
+              {%- if block.settings.tags != blank -%}
+                <ul class="diet" role="list">
+                  {%- assign tags = block.settings.tags | split: ',' -%}
+                  {%- for t in tags -%}
+                    {%- assign tt = t | strip -%}
+                    {%- if tt != blank -%}<li class="diet__item menu-item__tag">{{ tt | escape }}</li>{%- endif -%}
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+
+    {%- if section.settings.button_label != blank -%}
+      <div class="menu-list__cta{% if section.settings.align == 'center' %} menu-list__cta--center{% endif %}">
+        <a class="btn" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">{{ section.settings.button_label | escape }}</a>
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Menu",
+  "class": "section-menu",
+  "max_blocks": 50,
+  "settings": [
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "On the menu" },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Ask the team about allergens. V = vegetarian, VG = vegan, GF = gluten free.</p>" },
+    {
+      "type": "select", "id": "columns", "label": "Columns on desktop",
+      "options": [ { "value": "1", "label": "1" }, { "value": "2", "label": "2" } ],
+      "default": "2"
+    },
+    {
+      "type": "select", "id": "align", "label": "Heading alignment",
+      "options": [ { "value": "left", "label": "Left" }, { "value": "center", "label": "Centre" } ],
+      "default": "left"
+    },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Order online" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Colour scheme", "default": "scheme-1" },
+    { "type": "header", "content": "Spacing" },
+    { "type": "select", "id": "padding_top", "label": "Top", "options": [ { "value": "0", "label": "None" }, { "value": "0.25", "label": "Small" }, { "value": "0.5", "label": "Medium" }, { "value": "0.75", "label": "Large" } ], "default": "0.5" },
+    { "type": "select", "id": "padding_bottom", "label": "Bottom", "options": [ { "value": "0", "label": "None" }, { "value": "0.25", "label": "Small" }, { "value": "0.5", "label": "Medium" }, { "value": "0.75", "label": "Large" } ], "default": "0.5" }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Mains" },
+        { "type": "inline_richtext", "id": "note", "label": "Note" }
+      ]
+    },
+    {
+      "type": "item",
+      "name": "Dish",
+      "settings": [
+        { "type": "text", "id": "name", "label": "Name", "default": "Smash burger" },
+        { "type": "text", "id": "price", "label": "Price", "default": "£9.50", "info": "Shown as written, for example £9.50 or 9.5." },
+        { "type": "inline_richtext", "id": "description", "label": "Description", "default": "Two beef patties, American cheese, pickles, house sauce." },
+        { "type": "text", "id": "tags", "label": "Labels", "info": "Comma separated, for example V, GF, Spicy." },
+        { "type": "url", "id": "link", "label": "Link", "info": "Optional link to the product page." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Menu",
+      "blocks": [
+        { "type": "category", "settings": { "title": "Mains" } },
+        { "type": "item", "settings": { "name": "Smash burger", "price": "£9.50", "description": "Two beef patties, American cheese, pickles, house sauce." } },
+        { "type": "item", "settings": { "name": "Halloumi wrap", "price": "£8.00", "description": "Grilled halloumi, harissa yoghurt, pickled red onion.", "tags": "V" } },
+        { "type": "item", "settings": { "name": "Firecracker chicken", "price": "£10.00", "description": "Buttermilk thighs, chilli honey, slaw.", "tags": "Spicy" } },
+        { "type": "category", "settings": { "title": "Sides" } },
+        { "type": "item", "settings": { "name": "Skin-on fries", "price": "£3.50", "description": "Sea salt and rosemary.", "tags": "VG, GF" } },
+        { "type": "item", "settings": { "name": "Loaded fries", "price": "£5.50", "description": "Cheese sauce, jalapeños, crispy onions.", "tags": "V" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

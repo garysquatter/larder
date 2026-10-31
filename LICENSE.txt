@@ -1,0 +1,23 @@
+Larder – Licence
+
+Larder is free to use, including on commercial stores.
+
+Free licence – you may:
+- Install the theme on any number of your own Shopify stores
+- Change the code and design for those stores
+- Use it on stores you build for clients
+
+Free licence – conditions:
+- The "Theme by Rawcode" credit in the footer must stay visible and linked
+- You may not resell, share or redistribute the theme, in whole or in part,
+  modified or not, as your own product or as part of a theme bundle
+
+White-label licence – 59 EUR per store:
+- Removes the credit requirement for one live store
+- Includes priority email support for the first 30 days
+- Buy it at https://rawcode.online or email hello@rawcode.online
+
+Fonts bundled with the theme are licensed under the SIL Open Font License.
+Demo photos are not included and may not be used in your store.
+
+Larder is made by Rawcode – https://rawcode.online – hello@rawcode.online

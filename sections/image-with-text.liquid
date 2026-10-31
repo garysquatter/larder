@@ -1,0 +1,61 @@
+{%- liquid
+  assign shape = section.settings.image_shape
+  if shape == 'theme'
+    capture shape
+      render 'style-value', key: 'feature_image_shape'
+    endcapture
+  endif
+  if shape == 'arch'
+    assign media_class = 'media--arch'
+  else
+    assign media_class = ''
+  endif
+-%}
+<section class="section color-{{ section.settings.color_scheme }}" style="--pt: {{ section.settings.padding_top }}; --pb: {{ section.settings.padding_bottom }};">
+  <div class="page-width split{% if section.settings.image_position == 'right' %} split--reverse{% endif %}">
+    {% render 'media', image: section.settings.image, ratio: section.settings.ratio, class: media_class, placeholder: 'lifestyle-2', sizes: '(min-width: 990px) 50vw, 100vw' %}
+    <div class="stack" style="--gap: 20px;">
+      {%- if section.settings.eyebrow != blank -%}<p class="label">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+      {%- if section.settings.heading != blank -%}<h2 class="h1">{{ section.settings.heading }}</h2>{%- endif -%}
+      {%- if section.settings.text != blank -%}<div class="rte lede">{{ section.settings.text }}</div>{%- endif -%}
+      {%- if section.settings.link_label != blank -%}
+        <p style="margin: 8px 0 0;"><a class="link-underline" href="{{ section.settings.link | default: '#' }}">{{ section.settings.link_label | escape }}</a></p>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Image with text",
+  "class": "section-image-with-text",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    {
+      "type": "select", "id": "image_position", "label": "Image position",
+      "options": [ { "value": "left", "label": "Left" }, { "value": "right", "label": "Right" } ],
+      "default": "left"
+    },
+    {
+      "type": "select", "id": "ratio", "label": "Image ratio",
+      "options": [ { "value": "1 / 1", "label": "Square" }, { "value": "5 / 4", "label": "Landscape" }, { "value": "4 / 5", "label": "Portrait" } ],
+      "default": "5 / 4"
+    },
+    {
+      "type": "select", "id": "image_shape", "label": "Image shape",
+      "options": [ { "value": "theme", "label": "Use theme style" }, { "value": "default", "label": "Standard" }, { "value": "arch", "label": "Arch" } ],
+      "default": "theme"
+    },
+    { "type": "text", "id": "eyebrow", "label": "Label", "default": "From the kitchen" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Made in small batches. Never watered down." },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Tell your story here: who makes it, where it is made, and why it tastes different from the supermarket shelf.</p>" },
+    { "type": "text", "id": "link_label", "label": "Link label", "default": "Our story" },
+    { "type": "url", "id": "link", "label": "Link" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Colour scheme", "default": "scheme-1" },
+    { "type": "header", "content": "Spacing" },
+    { "type": "select", "id": "padding_top", "label": "Top", "options": [ { "value": "0", "label": "None" }, { "value": "0.25", "label": "Small" }, { "value": "0.5", "label": "Medium" }, { "value": "0.75", "label": "Large" } ], "default": "0.5" },
+    { "type": "select", "id": "padding_bottom", "label": "Bottom", "options": [ { "value": "0", "label": "None" }, { "value": "0.25", "label": "Small" }, { "value": "0.5", "label": "Medium" }, { "value": "0.75", "label": "Large" } ], "default": "0.5" }
+  ],
+  "presets": [ { "name": "Image with text" } ]
+}
+{% endschema %}

@@ -1,0 +1,73 @@
+<section class="section color-{{ section.settings.color_scheme }}" style="--pt: {{ section.settings.padding_top }}; --pb: {{ section.settings.padding_bottom }};">
+  <div class="page-width">
+    {%- if section.settings.heading != blank -%}
+      <div class="section-head{% if section.settings.align == 'center' %} section-head--center{% endif %}"><h2 class="h2">{{ section.settings.heading }}</h2></div>
+    {%- endif -%}
+    <div class="promises{% if section.settings.lines %} promises--lined{% endif %}{% if section.settings.align == 'center' %} promises--center{% endif %}">
+      {%- for block in section.blocks -%}
+        <div class="promise" {{ block.shopify_attributes }}>
+          {%- if block.settings.icon != 'none' -%}
+            {% render 'icon', name: block.settings.icon, class: 'promise__icon', stroke: 1.6 %}
+          {%- endif -%}
+          <h3 class="promise__title">{{ block.settings.title | escape }}</h3>
+          {%- if block.settings.text != blank -%}<p class="muted" style="margin: 0; font-size: .9375rem;">{{ block.settings.text }}</p>{%- endif -%}
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Promises",
+  "class": "section-promises",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "inline_richtext", "id": "heading", "label": "Heading" },
+    { "type": "checkbox", "id": "lines", "label": "Show lines above and below", "default": true },
+    {
+      "type": "select", "id": "align", "label": "Alignment",
+      "options": [ { "value": "left", "label": "Left" }, { "value": "center", "label": "Centre" } ],
+      "default": "left"
+    },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Colour scheme", "default": "scheme-1" },
+    { "type": "header", "content": "Spacing" },
+    { "type": "select", "id": "padding_top", "label": "Top", "options": [ { "value": "0", "label": "None" }, { "value": "0.25", "label": "Small" }, { "value": "0.5", "label": "Medium" }, { "value": "0.75", "label": "Large" } ], "default": "0.5" },
+    { "type": "select", "id": "padding_bottom", "label": "Bottom", "options": [ { "value": "0", "label": "None" }, { "value": "0.25", "label": "Small" }, { "value": "0.5", "label": "Medium" }, { "value": "0.75", "label": "Large" } ], "default": "0.5" }
+  ],
+  "blocks": [
+    {
+      "type": "promise",
+      "name": "Promise",
+      "settings": [
+        {
+          "type": "select", "id": "icon", "label": "Icon",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "check-circle", "label": "Tick" },
+            { "value": "leaf", "label": "Leaf" },
+            { "value": "flame", "label": "Flame" },
+            { "value": "wheat", "label": "Wheat" },
+            { "value": "truck", "label": "Delivery" },
+            { "value": "heart", "label": "Heart" }
+          ],
+          "default": "none"
+        },
+        { "type": "text", "id": "title", "label": "Title", "default": "Real ingredients" },
+        { "type": "inline_richtext", "id": "text", "label": "Text", "default": "No extracts, no shortcuts." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Promises",
+      "blocks": [
+        { "type": "promise", "settings": { "title": "Real chillies", "text": "No extracts, no shortcuts." } },
+        { "type": "promise", "settings": { "title": "Small batches", "text": "Made by hand, batch-dated." } },
+        { "type": "promise", "settings": { "title": "Allergens clear", "text": "Listed on every product page." } },
+        { "type": "promise", "settings": { "title": "Fast delivery", "text": "Dispatched within 48 hours." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,11 @@
+{%- comment -%}
+  Article card. - article (blank renders placeholder) - ratio
+{%- endcomment -%}
+<a href="{{ article.url | default: '#' }}" class="article-card">
+  {% render 'media', image: article.image, ratio: ratio, placeholder: 'lifestyle-1', sizes: '(min-width: 990px) 33vw, 100vw' %}
+  <p class="label" style="margin-top: 6px;">
+    {%- if article.tags.size > 0 -%}{{ article.tags.first }} · {% endif -%}
+    {%- if article != blank -%}{{ article.published_at | time_tag: format: 'date' }}{%- else -%}Recipe{%- endif -%}
+  </p>
+  <h3 class="h3 article-card__title">{{ article.title | default: 'Recipe title' | escape }}</h3>
+</a>

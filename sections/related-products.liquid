@@ -1,0 +1,37 @@
+{%- comment -%} Loaded with the Product Recommendations API (see global.js). {%- endcomment -%}
+<section class="section color-{{ section.settings.color_scheme }}" style="--pt: {{ section.settings.padding_top }}; --pb: {{ section.settings.padding_bottom }};">
+  <div class="page-width">
+    <div data-recommendations data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ section.settings.limit }}&intent={{ section.settings.intent }}">
+      {%- if recommendations.performed? and recommendations.products_count > 0 -%}
+        <div class="section-head"><h2 class="h2">{{ section.settings.heading | escape }}</h2></div>
+        <div class="grid" style="--min: 240px;">
+          {%- for rec in recommendations.products -%}
+            {% render 'product-card', product: rec %}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Related products",
+  "class": "section-related-products",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Goes well with" },
+    { "type": "range", "id": "limit", "label": "Products to show", "min": 2, "max": 8, "step": 1, "default": 4 },
+    {
+      "type": "select", "id": "intent", "label": "Recommendation type",
+      "options": [ { "value": "related", "label": "Related" }, { "value": "complementary", "label": "Complementary (set in Search & Discovery app)" } ],
+      "default": "related"
+    },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Colour scheme", "default": "scheme-1" },
+    { "type": "header", "content": "Spacing" },
+    { "type": "select", "id": "padding_top", "label": "Top", "options": [ { "value": "0", "label": "None" }, { "value": "0.25", "label": "Small" }, { "value": "0.5", "label": "Medium" }, { "value": "0.75", "label": "Large" } ], "default": "0.5" },
+    { "type": "select", "id": "padding_bottom", "label": "Bottom", "options": [ { "value": "0", "label": "None" }, { "value": "0.25", "label": "Small" }, { "value": "0.5", "label": "Medium" }, { "value": "0.75", "label": "Large" } ], "default": "0.75" }
+  ],
+  "presets": [ { "name": "Related products" } ],
+  "enabled_on": { "templates": ["product"] }
+}
+{% endschema %}

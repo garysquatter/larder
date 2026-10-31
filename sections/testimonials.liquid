@@ -1,0 +1,52 @@
+<section class="section color-{{ section.settings.color_scheme }}" style="--pt: {{ section.settings.padding_top }}; --pb: {{ section.settings.padding_bottom }};">
+  <div class="page-width">
+    {%- if section.settings.heading != blank -%}
+      <div class="section-head"><h2 class="h2">{{ section.settings.heading }}</h2></div>
+    {%- endif -%}
+    <div class="grid" style="--min: 280px;">
+      {%- for block in section.blocks -%}
+        <figure class="testimonial" {{ block.shopify_attributes }}>
+          {%- assign stars = '' -%}
+          {%- for i in (1..block.settings.rating) -%}{%- assign stars = stars | append: '★' -%}{%- endfor -%}
+          <span class="stars" role="img" aria-label="{{ 'accessibility.rating' | t: rating: block.settings.rating }}">{{ stars }}</span>
+          <blockquote>{{ block.settings.quote }}</blockquote>
+          <figcaption>
+            <strong style="color: var(--color-text); font-weight: 600;">{{ block.settings.author | escape }}</strong>
+            {%- if block.settings.product != blank %} · {{ block.settings.product | escape }}{% endif -%}
+          </figcaption>
+        </figure>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Testimonials",
+  "class": "section-testimonials",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "paragraph", "content": "Use real customer reviews only. For live product reviews, add your reviews app's block instead." },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Straight from the bottle" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Colour scheme", "default": "scheme-1" },
+    { "type": "header", "content": "Spacing" },
+    { "type": "select", "id": "padding_top", "label": "Top", "options": [ { "value": "0", "label": "None" }, { "value": "0.25", "label": "Small" }, { "value": "0.5", "label": "Medium" }, { "value": "0.75", "label": "Large" } ], "default": "0.5" },
+    { "type": "select", "id": "padding_bottom", "label": "Bottom", "options": [ { "value": "0", "label": "None" }, { "value": "0.25", "label": "Small" }, { "value": "0.5", "label": "Medium" }, { "value": "0.75", "label": "Large" } ], "default": "0.5" }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Testimonial",
+      "settings": [
+        { "type": "range", "id": "rating", "label": "Rating", "min": 1, "max": 5, "step": 1, "default": 5 },
+        { "type": "richtext", "id": "quote", "label": "Quote", "default": "<p>Add a customer review here.</p>" },
+        { "type": "text", "id": "author", "label": "Name", "default": "Customer name" },
+        { "type": "text", "id": "product", "label": "Product or detail", "default": "Verified buyer" }
+      ]
+    }
+  ],
+  "presets": [
+    { "name": "Testimonials", "blocks": [ { "type": "testimonial" }, { "type": "testimonial" }, { "type": "testimonial" } ] }
+  ]
+}
+{% endschema %}

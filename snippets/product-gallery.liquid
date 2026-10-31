@@ -1,0 +1,46 @@
+{%- comment -%}
+  Product media slider with thumbnails and a full-size dialog.
+  - product, section_id, current_variant, ratio
+{%- endcomment -%}
+{%- liquid
+  assign featured = current_variant.featured_media | default: product.featured_media
+  assign media_count = product.media.size
+-%}
+<div class="product__media gallery" data-gallery>
+  {%- if media_count > 0 -%}
+    <div class="gallery__track" data-gallery-track tabindex="0" aria-label="{{ 'products.product.gallery' | t }}">
+      {%- if featured -%}
+        <div class="gallery__slide" data-media-id="{{ featured.id }}">
+          {%- render 'gallery-media', media: featured, ratio: ratio, eager: true -%}
+        </div>
+      {%- endif -%}
+      {%- for media in product.media -%}
+        {%- unless media.id == featured.id -%}
+          <div class="gallery__slide" data-media-id="{{ media.id }}">
+            {%- render 'gallery-media', media: media, ratio: ratio, eager: false -%}
+          </div>
+        {%- endunless -%}
+      {%- endfor -%}
+    </div>
+    {%- if media_count > 1 -%}
+      <ul class="gallery__thumbs" role="list">
+        {%- if featured -%}
+          <li><button type="button" class="gallery__thumb is-active" data-thumb="{{ featured.id }}" aria-label="{{ 'products.product.show_image' | t: number: 1 }}" aria-current="true">{{ featured.preview_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: '' }}</button></li>
+        {%- endif -%}
+        {%- assign n = 1 -%}
+        {%- for media in product.media -%}
+          {%- unless media.id == featured.id -%}
+            {%- assign n = n | plus: 1 -%}
+            <li><button type="button" class="gallery__thumb" data-thumb="{{ media.id }}" aria-label="{{ 'products.product.show_image' | t: number: n }}">{{ media.preview_image | image_url: width: 160 | image_tag: loading: 'lazy', alt: '' }}</button></li>
+          {%- endunless -%}
+        {%- endfor -%}
+      </ul>
+    {%- endif -%}
+    <dialog class="lightbox" data-lightbox aria-label="{{ 'products.product.gallery' | t }}">
+      <button type="button" class="icon-btn lightbox__close" data-lightbox-close aria-label="{{ 'general.close' | t }}">{% render 'icon', name: 'close' %}</button>
+      <img data-lightbox-img src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" width="1600" height="1600" alt="">
+    </dialog>
+  {%- else -%}
+    <div class="gallery__slide">{% render 'media', ratio: ratio, placeholder: 'product-1' %}</div>
+  {%- endif -%}
+</div>

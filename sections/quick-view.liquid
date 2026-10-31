@@ -1,0 +1,82 @@
+{%- comment -%}
+  Rendered on demand through the Section Rendering API (product URL + ?section_id=quick-view)
+  to fill the quick view dialog from the eye button on product cards. Not added to templates.
+{%- endcomment -%}
+{%- if product -%}
+  {%- liquid
+    assign current_variant = product.selected_or_first_available_variant
+    assign m = product.metafields.larder
+    assign images = product.media | where: 'media_type', 'image'
+  -%}
+  <div class="quick-add quick-view" data-quick-add-content>
+    <div class="quick-view__gallery">
+      <div class="quick-view__track" data-qv-track tabindex="0" aria-label="{{ 'products.product.gallery' | t }}">
+        {%- for media in images limit: 8 -%}
+          <div class="quick-view__slide media">
+            {{ media | image_url: width: 900 | image_tag: loading: 'eager', sizes: '(min-width: 750px) 420px, 100vw', widths: '450, 700, 900', alt: media.alt | default: product.title }}
+          </div>
+        {%- else -%}
+          <div class="quick-view__slide media">{{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}</div>
+        {%- endfor -%}
+      </div>
+      {%- if images.size > 1 -%}
+        <div class="quick-view__dots" data-qv-dots>
+          {%- for media in images limit: 8 -%}
+            <button type="button" aria-label="{{ 'products.product.show_image' | t: number: forloop.index }}"{% if forloop.first %} aria-current="true"{% endif %}></button>
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="quick-add__info stack" style="--gap: 14px;">
+      {%- if m.weight.value != blank -%}<p class="label" style="margin: 0;">{{ m.weight.value }}</p>{%- endif -%}
+      <h2 class="h3" id="QuickAddTitle">{{ product.title | escape }}</h2>
+      <div class="product__price">{% render 'price', product: product %}</div>
+      {% render 'dietary-badges', product: product, limit: 6, size: 'large' %}
+      {%- if m.heat_level.value != blank or m.kcal.value != blank or m.protein.value != blank -%}
+        <div class="product-card__chips">
+          {%- if m.heat_level.value != blank -%}<span class="chip chip--card">{% render 'icon', name: 'flame', class: 'diet__icon' %} {{ 'products.product.heat' | t: level: m.heat_level.value }}</span>{%- endif -%}
+          {%- if m.kcal.value != blank -%}<span class="chip chip--card">{{ 'products.product.kcal' | t: value: m.kcal.value }}</span>{%- endif -%}
+          {%- if m.protein.value != blank -%}<span class="chip chip--card">{{ 'products.product.protein' | t: value: m.protein.value }}</span>{%- endif -%}
+        </div>
+      {%- endif -%}
+      {%- if product.description != blank -%}
+        <p class="quick-view__desc">{{ product.description | strip_html | truncatewords: 40 }}</p>
+      {%- endif -%}
+
+      {%- form 'product', product, data-cart-form: '', class: 'stack', style: '--gap: 14px;' -%}
+        {%- if product.has_only_default_variant -%}
+          <input type="hidden" name="id" value="{{ current_variant.id }}">
+        {%- else -%}
+          <label class="field">
+            <span class="label">{{ product.options | join: ' / ' | escape }}</span>
+            <select name="id">
+              {%- for v in product.variants -%}
+                <option value="{{ v.id }}"{% if v.id == current_variant.id %} selected{% endif %}{% unless v.available %} disabled{% endunless %}>
+                  {{ v.title | escape }} – {{ v.price | money }}{% unless v.available %} ({{ 'products.product.sold_out' | t }}){% endunless %}
+                </option>
+              {%- endfor -%}
+            </select>
+          </label>
+        {%- endif -%}
+        <div class="buy-row">
+          <div class="qty qty--lg">
+            <button type="button" data-qty-step="-1" aria-label="{{ 'products.product.decrease' | t: product: product.title | escape }}">−</button>
+            <label class="visually-hidden" for="QuickViewQty">{{ 'products.product.quantity' | t }}</label>
+            <input id="QuickViewQty" type="number" name="quantity" min="1" value="1" inputmode="numeric">
+            <button type="button" data-qty-step="1" aria-label="{{ 'products.product.increase' | t: product: product.title | escape }}">+</button>
+          </div>
+          <button type="submit" class="btn buy-row__btn"{% unless product.available %} disabled{% endunless %}>
+            {%- if product.available -%}{{ 'products.product.add_to_cart' | t }}{%- else -%}{{ 'products.product.sold_out' | t }}{%- endif -%}
+          </button>
+        </div>
+        <p class="form-message" data-form-error role="alert"></p>
+      {%- endform -%}
+      <a class="link-underline" href="{{ product.url }}">{{ 'products.product.full_details' | t }}</a>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{ "name": "Quick view", "settings": [] }
+{% endschema %}

@@ -1,0 +1,57 @@
+{%- comment -%}
+  Active filters as removable chips, plus optional quick-filter pills.
+  - results: collection or search object
+  - clear_url: url without filters
+  - quick_label: label of the filter to show as one-click pills (optional)
+{%- endcomment -%}
+{%- liquid
+  assign active = 0
+  for filter in results.filters
+    assign active = active | plus: filter.active_values.size
+    if filter.type == 'price_range'
+      if filter.min_value.value != nil or filter.max_value.value != nil
+        assign active = active | plus: 1
+      endif
+    endif
+  endfor
+
+  assign quick = nil
+  if quick_label != blank
+    assign quick_handle = quick_label | handle
+    for filter in results.filters
+      assign fh = filter.label | handle
+      if fh == quick_handle and filter.type == 'list'
+        assign quick = filter
+        break
+      endif
+    endfor
+  endif
+-%}
+{%- if quick != nil -%}
+  <nav class="quick-filters" aria-label="{{ quick.label | escape }}">
+    {%- for value in quick.values -%}
+      {%- if value.count > 0 or value.active -%}
+        <a class="quick-filters__pill{% if value.active %} is-active{% endif %}" href="{% if value.active %}{{ value.url_to_remove }}{% else %}{{ value.url_to_add }}{% endif %}"{% if value.active %} aria-current="true"{% endif %}>
+          {%- if value.active -%}{% render 'icon', name: 'check', class: 'quick-filters__icon' %}{%- endif -%}
+          {{ value.label | escape }}
+        </a>
+      {%- endif -%}
+    {%- endfor -%}
+  </nav>
+{%- endif -%}
+{%- if active > 0 -%}
+  <div class="facets__active">
+    {%- for filter in results.filters -%}
+      {%- for v in filter.active_values -%}
+        <a class="pill facets__chip" href="{{ v.url_to_remove }}" aria-label="{{ 'collections.filters.remove' | t: filter: v.label }}">{{ v.label | escape }} {% render 'icon', name: 'close', class: 'facets__chip-x' %}</a>
+      {%- endfor -%}
+      {%- if filter.type == 'price_range' -%}
+        {%- if filter.min_value.value != nil or filter.max_value.value != nil -%}
+          {%- capture price_label -%}{{ filter.min_value.value | default: 0 | money_without_trailing_zeros }}–{{ filter.max_value.value | default: filter.range_max | money_without_trailing_zeros }}{%- endcapture -%}
+          <a class="pill facets__chip" href="{{ filter.url_to_remove }}" aria-label="{{ 'collections.filters.remove' | t: filter: price_label }}">{{ price_label }} {% render 'icon', name: 'close', class: 'facets__chip-x' %}</a>
+        {%- endif -%}
+      {%- endif -%}
+    {%- endfor -%}
+    <a class="link-underline" href="{{ clear_url }}">{{ 'collections.filters.clear' | t }}</a>
+  </div>
+{%- endif -%}

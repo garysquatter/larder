@@ -1,0 +1,42 @@
+{%- comment -%} Rendered through the Section Rendering API by the header search dialog. {%- endcomment -%}
+<div id="PredictiveResults">
+  {%- if predictive_search.performed -%}
+    {%- assign r = predictive_search.resources -%}
+    {%- if r.products.size > 0 or r.collections.size > 0 or r.articles.size > 0 or r.queries.size > 0 -%}
+      {%- if r.queries.size > 0 -%}
+        <ul class="ps__queries" role="list">
+          {%- for q in r.queries -%}
+            <li><a class="pill" href="{{ q.url }}">{{ q.styled_text }}</a></li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+      {%- if r.products.size > 0 -%}
+        <p class="label ps__label">{{ 'general.search.products' | t }}</p>
+        <ul class="ps__list" role="list">
+          {%- for p in r.products -%}
+            <li>
+              <a class="ps__item" href="{{ p.url }}">
+                <span class="ps__thumb">{% if p.featured_media %}{{ p.featured_media | image_url: width: 120 | image_tag: loading: 'lazy', alt: '' }}{% endif %}</span>
+                <span><strong>{{ p.title | escape }}</strong><br><span class="muted">{{ p.price | money }}</span></span>
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+      {%- if r.collections.size > 0 or r.articles.size > 0 -%}
+        <p class="label ps__label">{{ 'general.search.more' | t }}</p>
+        <ul class="ps__list" role="list">
+          {%- for c in r.collections -%}<li><a class="ps__item" href="{{ c.url }}">{{ c.title | escape }}</a></li>{%- endfor -%}
+          {%- for a in r.articles -%}<li><a class="ps__item" href="{{ a.url }}">{{ a.title | escape }}</a></li>{%- endfor -%}
+        </ul>
+      {%- endif -%}
+      <p style="margin: 16px 0 0;"><a class="link-underline" href="{{ routes.search_url }}?q={{ predictive_search.terms | url_encode }}&options[prefix]=last">{{ 'general.search.view_all' | t: terms: predictive_search.terms }}</a></p>
+    {%- else -%}
+      <p class="muted">{{ 'general.search.no_results' | t: terms: predictive_search.terms }}</p>
+    {%- endif -%}
+  {%- endif -%}
+</div>
+
+{% schema %}
+{ "name": "Predictive search", "settings": [] }
+{% endschema %}

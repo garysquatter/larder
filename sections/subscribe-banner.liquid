@@ -1,0 +1,99 @@
+{%- liquid
+  assign checks = section.blocks | where: 'type', 'check'
+  assign steps = section.blocks | where: 'type', 'step'
+-%}
+<section class="section color-{{ section.settings.section_scheme }}" style="--pt: {{ section.settings.padding_top }}; --pb: {{ section.settings.padding_bottom }};">
+  <div class="page-width">
+    <div class="panel color-{{ section.settings.color_scheme }}{% if section.settings.outline %} panel--outline{% endif %}">
+      <div class="split" style="align-items: {% if section.settings.image != blank %}center{% else %}flex-start{% endif %};">
+        {%- if section.settings.image != blank -%}
+          {% render 'media', image: section.settings.image, ratio: '1 / 1', sizes: '(min-width: 990px) 40vw, 100vw' %}
+        {%- endif -%}
+        <div class="stack" style="--gap: 18px;">
+          {%- if section.settings.eyebrow != blank -%}<p class="label">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+          {%- if section.settings.heading != blank -%}<h2 class="h1">{{ section.settings.heading }}</h2>{%- endif -%}
+          {%- if section.settings.text != blank -%}<p class="lede">{{ section.settings.text }}</p>{%- endif -%}
+          {%- if section.settings.image != blank and checks.size > 0 -%}
+            <ul class="checklist" style="margin-top: 8px;">
+              {%- for block in checks -%}
+                <li {{ block.shopify_attributes }}>{% render 'icon', name: 'check', stroke: 2.5 %}<span>{{ block.settings.text }}</span></li>
+              {%- endfor -%}
+            </ul>
+          {%- endif -%}
+          {%- if section.settings.button_label != blank and steps.size == 0 -%}
+            <p style="margin: 12px 0 0;"><a class="btn" href="{{ section.settings.button_link | default: '#' }}">{{ section.settings.button_label | escape }}</a></p>
+          {%- endif -%}
+        </div>
+        {%- if section.settings.image == blank and checks.size > 0 -%}
+          <ul class="checklist" style="flex-basis: 320px;">
+            {%- for block in checks -%}
+              <li {{ block.shopify_attributes }}>{% render 'icon', name: 'check', stroke: 2.5 %}<span>{{ block.settings.text }}</span></li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </div>
+      {%- if steps.size > 0 -%}
+        <div class="steps">
+          {%- for block in steps -%}
+            <div class="step" {{ block.shopify_attributes }}>
+              <span class="step__num" aria-hidden="true">{{ forloop.index }}</span>
+              <h3 class="step__title">{{ block.settings.title | escape }}</h3>
+              <p class="muted" style="margin: 0;">{{ block.settings.text }}</p>
+            </div>
+          {%- endfor -%}
+        </div>
+        {%- if section.settings.button_label != blank -%}
+          <p style="margin: 32px 0 0;"><a class="btn" href="{{ section.settings.button_link | default: '#' }}">{{ section.settings.button_label | escape }}</a></p>
+        {%- endif -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Subscribe & save",
+  "class": "section-subscribe",
+  "settings": [
+    { "type": "paragraph", "content": "Promote subscriptions or bundles. Add checklist items, numbered steps, or both. Link the button to your subscription product or bundle builder." },
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "text", "id": "eyebrow", "label": "Label", "default": "Subscribe & save" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Join the Sauce Club" },
+    { "type": "inline_richtext", "id": "text", "label": "Text", "default": "Pick three bottles, choose how often they arrive. Skip, swap or cancel anytime." },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Start a subscription" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Panel colour scheme", "default": "scheme-2" },
+    { "type": "checkbox", "id": "outline", "label": "Show panel border", "info": "Uses the colour scheme's border colour.", "default": true },
+    { "type": "color_scheme", "id": "section_scheme", "label": "Section colour scheme", "default": "scheme-1" },
+    { "type": "header", "content": "Spacing" },
+    { "type": "select", "id": "padding_top", "label": "Top", "options": [ { "value": "0", "label": "None" }, { "value": "0.25", "label": "Small" }, { "value": "0.5", "label": "Medium" }, { "value": "0.75", "label": "Large" } ], "default": "0.5" },
+    { "type": "select", "id": "padding_bottom", "label": "Bottom", "options": [ { "value": "0", "label": "None" }, { "value": "0.25", "label": "Small" }, { "value": "0.5", "label": "Medium" }, { "value": "0.75", "label": "Large" } ], "default": "0.5" }
+  ],
+  "blocks": [
+    {
+      "type": "check",
+      "name": "Checklist item",
+      "settings": [ { "type": "inline_richtext", "id": "text", "label": "Text", "default": "Free delivery on every box" } ]
+    },
+    {
+      "type": "step",
+      "name": "Step",
+      "limit": 4,
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Pick your favourites" },
+        { "type": "inline_richtext", "id": "text", "label": "Text", "default": "Mix any products you like." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Subscribe & save",
+      "blocks": [
+        { "type": "check", "settings": { "text": "Save 10% on every delivery" } },
+        { "type": "check", "settings": { "text": "Free delivery on every box" } },
+        { "type": "check", "settings": { "text": "First taste of new batches" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

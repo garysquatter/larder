@@ -1,0 +1,31 @@
+<section class="section" style="--pt: .5; --pb: .75;">
+  <div class="page-width stack" style="--gap: 20px;">
+    <a href="{{ routes.account_url }}" class="link-underline" style="align-self: flex-start;">{{ 'customer.order.back' | t }}</a>
+    <h1 class="h1">{{ 'customer.order.title' | t: name: order.name }}</h1>
+    <p class="muted">{{ order.created_at | time_tag: format: 'date_at_time' }}{% if order.cancelled %} · {{ 'customer.order.cancelled' | t }}{% endif %}</p>
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr><th scope="col">{{ 'cart.product' | t }}</th><th scope="col">{{ 'cart.quantity' | t }}</th><th scope="col">{{ 'cart.total' | t }}</th></tr></thead>
+        <tbody>
+          {%- for item in order.line_items -%}
+            <tr><td>{{ item.title | link_to: item.product.url }}{% if item.selling_plan_allocation %}<br><span class="muted">{{ item.selling_plan_allocation.selling_plan.name }}</span>{% endif %}</td><td>{{ item.quantity }}</td><td>{{ item.final_line_price | money }}</td></tr>
+          {%- endfor -%}
+        </tbody>
+        <tfoot>
+          <tr><th scope="row" colspan="2">{{ 'cart.subtotal' | t }}</th><td>{{ order.line_items_subtotal_price | money }}</td></tr>
+          {%- for line in order.shipping_methods -%}<tr><th scope="row" colspan="2">{{ line.title }}</th><td>{{ line.price | money }}</td></tr>{%- endfor -%}
+          {%- for t in order.tax_lines -%}<tr><th scope="row" colspan="2">{{ t.title }}</th><td>{{ t.price | money }}</td></tr>{%- endfor -%}
+          <tr><th scope="row" colspan="2">{{ 'cart.total' | t }}</th><td><strong>{{ order.total_price | money_with_currency }}</strong></td></tr>
+        </tfoot>
+      </table>
+    </div>
+    <div class="split" style="align-items: flex-start;">
+      {%- if order.billing_address -%}<div><h2 class="h4">{{ 'customer.order.billing' | t }}</h2><p>{{ order.billing_address | format_address }}</p></div>{%- endif -%}
+      {%- if order.shipping_address -%}<div><h2 class="h4">{{ 'customer.order.shipping' | t }}</h2><p>{{ order.shipping_address | format_address }}</p></div>{%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Order", "settings": [] }
+{% endschema %}

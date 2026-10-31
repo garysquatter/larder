@@ -1,0 +1,22 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {}
+    },
+    "form": {
+      "type": "contact-form",
+      "settings": {
+        "heading": "Get in touch",
+        "text": "<p>Questions about an order, wholesale or allergens? We reply within one working day.</p>",
+        "color_scheme": "scheme-1",
+        "padding_top": "0.25",
+        "padding_bottom": "0.75"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "form"
+  ]
+}

@@ -1,0 +1,367 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "settings": {
+        "layout": "theme",
+        "height": "medium",
+        "overlay": 35,
+        "eyebrow": "Small-batch sauces, rubs & snacks",
+        "heading": "Bring the heat home.",
+        "text": "Bold flavours made in small batches, for people who put sauce on everything.",
+        "button_label": "Shop bestsellers",
+        "button_link": "shopify://collections/bestsellers",
+        "button_label_2": "Build a box",
+        "button_link_2": "shopify://collections/gift-boxes",
+        "color_scheme": "scheme-1",
+        "image": "shopify://shop_images/larder-hero.jpg"
+      },
+      "blocks": {
+        "pill-1": {
+          "type": "pill",
+          "settings": {
+            "text": "Small batch"
+          }
+        },
+        "pill-2": {
+          "type": "pill",
+          "settings": {
+            "text": "Plant-based"
+          }
+        },
+        "pill-3": {
+          "type": "pill",
+          "settings": {
+            "text": "No artificial colours"
+          }
+        },
+        "stat-1": {
+          "type": "stat",
+          "settings": {
+            "value": "100%",
+            "label": "real ingredients"
+          }
+        },
+        "stat-2": {
+          "type": "stat",
+          "settings": {
+            "value": "48h",
+            "label": "dispatch"
+          }
+        }
+      },
+      "block_order": [
+        "pill-1",
+        "pill-2",
+        "pill-3",
+        "stat-1",
+        "stat-2"
+      ]
+    },
+    "marquee": {
+      "type": "marquee",
+      "settings": {
+        "animate": true,
+        "speed": 40,
+        "separator": "\u2014",
+        "color_scheme": "scheme-3"
+      },
+      "blocks": {
+        "item-1": {
+          "type": "item",
+          "settings": {
+            "text": "Sauces"
+          }
+        },
+        "item-2": {
+          "type": "item",
+          "settings": {
+            "text": "Rubs"
+          }
+        },
+        "item-3": {
+          "type": "item",
+          "settings": {
+            "text": "Snacks"
+          }
+        },
+        "item-4": {
+          "type": "item",
+          "settings": {
+            "text": "Gift boxes"
+          }
+        },
+        "item-5": {
+          "type": "item",
+          "settings": {
+            "text": "Subscriptions"
+          }
+        }
+      },
+      "block_order": [
+        "item-1",
+        "item-2",
+        "item-3",
+        "item-4",
+        "item-5"
+      ]
+    },
+    "collections": {
+      "type": "collection-list",
+      "settings": {
+        "heading": "Shop by craving",
+        "link_label": "View all",
+        "style": "theme",
+        "color_scheme": "scheme-1",
+        "padding_top": "0.75",
+        "padding_bottom": "0.5"
+      },
+      "blocks": {
+        "c-1": {
+          "type": "collection",
+          "settings": {
+            "title": "Sauces",
+            "collection": "sauces"
+          }
+        },
+        "c-2": {
+          "type": "collection",
+          "settings": {
+            "title": "Rubs & spices",
+            "collection": "rubs-spices"
+          }
+        },
+        "c-3": {
+          "type": "collection",
+          "settings": {
+            "title": "Snacks",
+            "collection": "snacks"
+          }
+        },
+        "c-4": {
+          "type": "collection",
+          "settings": {
+            "title": "Gift boxes",
+            "collection": "gift-boxes"
+          }
+        }
+      },
+      "block_order": [
+        "c-1",
+        "c-2",
+        "c-3",
+        "c-4"
+      ]
+    },
+    "bestsellers": {
+      "type": "featured-collection",
+      "settings": {
+        "eyebrow": "The line-up",
+        "heading": "Bestsellers",
+        "limit": 4,
+        "show_description": true,
+        "link_label": "Shop all",
+        "color_scheme": "scheme-1",
+        "padding_top": "0.5",
+        "padding_bottom": "0.5",
+        "collection": "bestsellers"
+      }
+    },
+    "story": {
+      "type": "image-with-text",
+      "settings": {
+        "image_position": "left",
+        "ratio": "5 / 4",
+        "image_shape": "theme",
+        "eyebrow": "From the kitchen",
+        "heading": "Made in small batches. Never watered down.",
+        "text": "<p>Tell your story here: who makes it, where it is made, and why it tastes different from the supermarket shelf.</p>",
+        "link_label": "Our story",
+        "color_scheme": "scheme-1",
+        "padding_top": "0.5",
+        "padding_bottom": "0.5",
+        "image": "shopify://shop_images/larder-story.jpg"
+      }
+    },
+    "subscribe": {
+      "type": "subscribe-banner",
+      "settings": {
+        "eyebrow": "Subscribe & save",
+        "heading": "Join the Sauce Club",
+        "text": "Pick three bottles, choose how often they arrive. Skip, swap or cancel anytime.",
+        "button_label": "Start a subscription",
+        "color_scheme": "scheme-2",
+        "outline": true,
+        "section_scheme": "scheme-1",
+        "padding_top": "0.5",
+        "padding_bottom": "0.5",
+        "image": "shopify://shop_images/larder-box.jpg",
+        "button_link": "shopify://products/the-heat-box"
+      },
+      "blocks": {
+        "check-1": {
+          "type": "check",
+          "settings": {
+            "text": "Save 10% on every delivery"
+          }
+        },
+        "check-2": {
+          "type": "check",
+          "settings": {
+            "text": "Free delivery on every box"
+          }
+        },
+        "check-3": {
+          "type": "check",
+          "settings": {
+            "text": "First taste of new batches"
+          }
+        }
+      },
+      "block_order": [
+        "check-1",
+        "check-2",
+        "check-3"
+      ]
+    },
+    "promises": {
+      "type": "promises",
+      "settings": {
+        "lines": true,
+        "align": "left",
+        "color_scheme": "scheme-1",
+        "padding_top": "0.5",
+        "padding_bottom": "0.5"
+      },
+      "blocks": {
+        "p-1": {
+          "type": "promise",
+          "settings": {
+            "icon": "none",
+            "title": "Real chillies",
+            "text": "No extracts, no shortcuts."
+          }
+        },
+        "p-2": {
+          "type": "promise",
+          "settings": {
+            "icon": "none",
+            "title": "Small batches",
+            "text": "Made by hand, batch-dated."
+          }
+        },
+        "p-3": {
+          "type": "promise",
+          "settings": {
+            "icon": "none",
+            "title": "Allergens clear",
+            "text": "Listed on every product page."
+          }
+        },
+        "p-4": {
+          "type": "promise",
+          "settings": {
+            "icon": "none",
+            "title": "Fast delivery",
+            "text": "Dispatched within 48 hours."
+          }
+        }
+      },
+      "block_order": [
+        "p-1",
+        "p-2",
+        "p-3",
+        "p-4"
+      ]
+    },
+    "quote": {
+      "type": "quote",
+      "settings": {
+        "quote": "A great sauce isn't complicated. Real chillies, real patience, and the courage to keep it simple.",
+        "author": "Founder name \u00b7 Founder",
+        "show_icon": false,
+        "color_scheme": "scheme-3",
+        "padding_top": "0.75",
+        "padding_bottom": "0.75"
+      }
+    },
+    "recipes": {
+      "type": "featured-blog",
+      "settings": {
+        "heading": "Cook with it",
+        "limit": 3,
+        "link_label": "All recipes",
+        "color_scheme": "scheme-1",
+        "padding_top": "0.75",
+        "padding_bottom": "0.5",
+        "blog": "recipes"
+      }
+    },
+    "testimonials": {
+      "type": "testimonials",
+      "settings": {
+        "heading": "Straight from the bottle",
+        "color_scheme": "scheme-1",
+        "padding_top": "0.5",
+        "padding_bottom": "0.75"
+      },
+      "blocks": {
+        "t-1": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "<p>Add a customer review here.</p>",
+            "author": "Customer name",
+            "product": "Verified buyer"
+          }
+        },
+        "t-2": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "<p>Add a customer review here.</p>",
+            "author": "Customer name",
+            "product": "Verified buyer"
+          }
+        },
+        "t-3": {
+          "type": "testimonial",
+          "settings": {
+            "rating": 5,
+            "quote": "<p>Add a customer review here.</p>",
+            "author": "Customer name",
+            "product": "Verified buyer"
+          }
+        }
+      },
+      "block_order": [
+        "t-1",
+        "t-2",
+        "t-3"
+      ]
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "heading": "First dibs on new batches",
+        "text": "New flavours, recipes and offers. No spam.",
+        "color_scheme": "scheme-3",
+        "padding_top": "0.5",
+        "padding_bottom": "0.5"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "marquee",
+    "collections",
+    "bestsellers",
+    "story",
+    "subscribe",
+    "promises",
+    "quote",
+    "recipes",
+    "testimonials",
+    "newsletter"
+  ]
+}

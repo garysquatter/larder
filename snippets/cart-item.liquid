@@ -1,0 +1,31 @@
+{%- comment -%} Cart line. - item - index (1-based line) {%- endcomment -%}
+<div class="cart-item" data-line="{{ index }}">
+  <a href="{{ item.url }}" tabindex="-1" aria-hidden="true">
+    {% render 'media', image: item.image, ratio: '1 / 1', placeholder: 'product-1', sizes: '84px' %}
+  </a>
+  <div>
+    <a class="cart-item__title" href="{{ item.url }}">{{ item.product.title | escape }}</a>
+    {%- unless item.product.has_only_default_variant -%}
+      <p class="cart-item__meta">{{ item.variant.title | escape }}</p>
+    {%- endunless -%}
+    {%- if item.selling_plan_allocation -%}
+      <p class="cart-item__meta">{{ item.selling_plan_allocation.selling_plan.name | escape }}</p>
+    {%- endif -%}
+    {%- for p in item.properties -%}
+      {%- assign first = p.first | slice: 0 -%}
+      {%- unless p.last == blank or first == '_' -%}
+        <p class="cart-item__meta">{{ p.first | escape }}: {{ p.last | escape }}</p>
+      {%- endunless -%}
+    {%- endfor -%}
+    <div class="qty">
+      <button type="button" data-qty-change="-1" aria-label="{{ 'products.product.decrease' | t: product: item.product.title | escape }}">−</button>
+      <label class="visually-hidden" for="Qty-{{ index }}">{{ 'products.product.quantity' | t }}</label>
+      <input id="Qty-{{ index }}" type="number" min="0" value="{{ item.quantity }}" inputmode="numeric">
+      <button type="button" data-qty-change="1" aria-label="{{ 'products.product.increase' | t: product: item.product.title | escape }}">+</button>
+    </div>
+  </div>
+  <div style="text-align: right;">
+    <span class="price">{{ item.final_line_price | money }}</span>
+    <div><button type="button" class="cart-remove" data-line-remove="{{ index }}" aria-label="{{ 'cart.remove_named' | t: product: item.product.title | escape }}">{{ 'cart.remove' | t }}</button></div>
+  </div>
+</div>

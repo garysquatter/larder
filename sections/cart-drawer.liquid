@@ -1,0 +1,48 @@
+<div id="CartDrawer" class="drawer" aria-hidden="true">
+  <div class="drawer__overlay" data-drawer-close></div>
+  <div class="drawer__panel color-{{ section.settings.color_scheme }}" role="dialog" aria-modal="true" aria-labelledby="CartDrawerTitle">
+    <div id="CartDrawerInner" style="display: flex; flex-direction: column; height: 100%;">
+      <div class="drawer__head">
+        <h2 id="CartDrawerTitle" class="h4">{{ 'cart.title' | t }}{% if cart.item_count > 0 %} ({{ cart.item_count }}){% endif %}</h2>
+        <button type="button" class="icon-btn" data-drawer-close aria-label="{{ 'general.close' | t }}">{% render 'icon', name: 'close' %}</button>
+      </div>
+      {%- if cart.item_count > 0 -%}
+        <div style="padding: 14px 24px 0;">{% render 'free-shipping' %}</div>
+        <div class="drawer__body">
+          {%- for item in cart.items -%}
+            {% render 'cart-item', item: item, index: forloop.index %}
+          {%- endfor -%}
+        </div>
+        <div class="drawer__foot">
+          {%- if settings.cart_note_text != blank -%}<p class="label" style="margin: 0;">{{ settings.cart_note_text | escape }}</p>{%- endif -%}
+          <div class="totals"><span>{{ 'cart.subtotal' | t }}</span><span>{{ cart.total_price | money_with_currency }}</span></div>
+          <p class="muted" style="margin: 0; font-size: .8125rem;">{{ 'cart.taxes_and_shipping' | t }}</p>
+          <form action="{{ routes.cart_url }}" method="post">
+            {%- if settings.show_cart_note -%}
+              <details class="accordion" style="margin-bottom: 12px;">
+                <summary><span>{{ 'cart.note' | t }}</span>{% render 'icon', name: 'plus', class: 'accordion__icon' %}</summary>
+                <div class="accordion__body field"><label class="visually-hidden" for="DrawerNote">{{ 'cart.note' | t }}</label><textarea id="DrawerNote" name="note" data-cart-note>{{ cart.note }}</textarea></div>
+              </details>
+            {%- endif -%}
+            <button type="submit" name="checkout" class="btn btn--full">{{ 'cart.checkout' | t }}</button>
+          </form>
+          <a href="{{ routes.cart_url }}" class="btn btn--secondary btn--full">{{ 'cart.view_cart' | t }}</a>
+        </div>
+      {%- else -%}
+        <div class="drawer__body" style="display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 20px; text-align: center;">
+          <p class="h3">{{ 'cart.empty' | t }}</p>
+          <a href="{{ routes.all_products_collection_url }}" class="btn">{{ 'general.continue_shopping' | t }}</a>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Cart drawer",
+  "settings": [
+    { "type": "color_scheme", "id": "color_scheme", "label": "Colour scheme", "default": "scheme-1" }
+  ]
+}
+{% endschema %}

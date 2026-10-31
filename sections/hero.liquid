@@ -1,0 +1,143 @@
+{%- liquid
+  assign layout = section.settings.layout
+  if layout == 'theme'
+    capture layout
+      render 'style-value', key: 'hero_layout'
+    endcapture
+  endif
+  assign pills = section.blocks | where: 'type', 'pill'
+  assign stats = section.blocks | where: 'type', 'stat'
+  case section.settings.height
+    when 'small'
+      assign hero_h = '560px'
+    when 'large'
+      assign hero_h = '880px'
+    else
+      assign hero_h = '760px'
+  endcase
+  capture fis
+    render 'style-value', key: 'feature_image_shape'
+  endcapture
+  if fis == 'arch'
+    assign split_media_class = 'hero__media media--arch'
+  else
+    assign split_media_class = 'hero__media'
+  endif
+-%}
+
+{%- capture hero_text -%}
+  {%- if layout == 'centered' and pills.size > 0 -%}
+    <div class="hero__pills">
+      {%- for block in pills -%}
+        <span class="pill" {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</span>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+  {%- if section.settings.eyebrow != blank and layout != 'centered' -%}
+    <p class="label">{{ section.settings.eyebrow | escape }}</p>
+  {%- endif -%}
+  {%- if section.settings.heading != blank -%}
+    <h1 class="h-display hero__heading">{{ section.settings.heading }}</h1>
+  {%- endif -%}
+  {%- if section.settings.text != blank -%}
+    <p class="lede">{{ section.settings.text }}</p>
+  {%- endif -%}
+  {%- if section.settings.button_label != blank or section.settings.button_label_2 != blank -%}
+    <div class="hero__buttons">
+      {%- if section.settings.button_label != blank -%}
+        <a class="btn" href="{{ section.settings.button_link | default: routes.all_products_collection_url }}">{{ section.settings.button_label | escape }}</a>
+      {%- endif -%}
+      {%- if section.settings.button_label_2 != blank -%}
+        <a class="btn btn--secondary" href="{{ section.settings.button_link_2 | default: '#' }}">{{ section.settings.button_label_2 | escape }}</a>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- capture stat_card -%}
+  {%- if stats.size > 0 -%}
+    <div class="hero__stats">
+      {%- for block in stats -%}
+        <div {{ block.shopify_attributes }}><strong>{{ block.settings.value | escape }}</strong><span>{{ block.settings.label | escape }}</span></div>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+{%- endcapture -%}
+
+<section class="hero hero--{{ layout }} color-{{ section.settings.color_scheme }}{% if layout != 'full' %} section{% endif %}" style="--hero-height: {{ hero_h }}; --overlay: {{ section.settings.overlay | divided_by: 100.0 }}; {% if layout != 'full' %}--pt: 0.25; --pb: 0.5;{% endif %}">
+  {%- case layout -%}
+    {%- when 'full' -%}
+      {% render 'media', image: section.settings.image, class: 'hero__bg', placeholder: 'lifestyle-1', sizes: '100vw', eager: true %}
+      <div class="hero__content page-width">{{ hero_text }}</div>
+    {%- when 'split' -%}
+      <div class="page-width hero__inner">
+        <div class="hero__content">{{ hero_text }}</div>
+        {% render 'media', image: section.settings.image, class: split_media_class, placeholder: 'lifestyle-1', sizes: '(min-width: 990px) 50vw, 100vw', eager: true %}
+      </div>
+    {%- else -%}
+      <div class="page-width">
+        <div class="hero__content">{{ hero_text }}</div>
+        <div style="position: relative;">
+          {% render 'media', image: section.settings.image, class: 'hero__media', placeholder: 'lifestyle-1', sizes: '(min-width: 1280px) 1240px, 100vw', eager: true %}
+          {{ stat_card }}
+        </div>
+      </div>
+  {%- endcase -%}
+</section>
+
+{% schema %}
+{
+  "name": "Hero",
+  "class": "section-hero",
+  "settings": [
+    {
+      "type": "select", "id": "layout", "label": "Layout",
+      "options": [
+        { "value": "theme", "label": "Use theme style" },
+        { "value": "full", "label": "Full-width image" },
+        { "value": "split", "label": "Split" },
+        { "value": "centered", "label": "Centred" }
+      ],
+      "default": "theme"
+    },
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    {
+      "type": "select", "id": "height", "label": "Height (full-width layout)",
+      "options": [
+        { "value": "small", "label": "Small" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "large", "label": "Large" }
+      ],
+      "default": "medium"
+    },
+    { "type": "range", "id": "overlay", "label": "Image overlay (full-width layout)", "min": 0, "max": 80, "step": 5, "unit": "%", "default": 35 },
+    { "type": "header", "content": "Content" },
+    { "type": "text", "id": "eyebrow", "label": "Label", "default": "Small-batch sauces, rubs & snacks" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "info": "Use italics to highlight a word in the accent colour.", "default": "Bring the heat home." },
+    { "type": "inline_richtext", "id": "text", "label": "Text", "default": "Bold flavours made in small batches, for people who put sauce on everything." },
+    { "type": "text", "id": "button_label", "label": "First button label", "default": "Shop bestsellers" },
+    { "type": "url", "id": "button_link", "label": "First button link" },
+    { "type": "text", "id": "button_label_2", "label": "Second button label", "default": "Build a box" },
+    { "type": "url", "id": "button_link_2", "label": "Second button link" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Colour scheme", "default": "scheme-1" }
+  ],
+  "blocks": [
+    {
+      "type": "pill",
+      "name": "Pill (centred layout)",
+      "limit": 4,
+      "settings": [ { "type": "text", "id": "text", "label": "Text", "default": "Plant-based" } ]
+    },
+    {
+      "type": "stat",
+      "name": "Stat (centred layout)",
+      "limit": 3,
+      "settings": [
+        { "type": "text", "id": "value", "label": "Value", "default": "12g" },
+        { "type": "text", "id": "label", "label": "Label", "default": "protein per bar" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Hero" } ]
+}
+{% endschema %}

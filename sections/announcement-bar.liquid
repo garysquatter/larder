@@ -1,0 +1,49 @@
+{%- if section.blocks.size > 0 -%}
+  <div class="announcement color-{{ section.settings.color_scheme }}{% if section.settings.label_style %} label-style{% endif %}" role="region" aria-label="Announcement">
+    <div class="page-width">
+      <p>
+        {%- for block in section.blocks -%}
+          <span {{ block.shopify_attributes }}>
+            {%- if block.settings.link != blank -%}
+              <a href="{{ block.settings.link }}">{{ block.settings.text }}</a>
+            {%- else -%}
+              {{ block.settings.text }}
+            {%- endif -%}
+          </span>
+          {%- unless forloop.last %} <span aria-hidden="true">·</span> {% endunless -%}
+        {%- endfor -%}
+      </p>
+    </div>
+  </div>
+  {%- if section.settings.label_style -%}
+    <style>
+      #shopify-section-{{ section.id }} .label-style p { font-family: var(--font-label); font-weight: var(--label-weight); letter-spacing: var(--label-tracking); text-transform: var(--label-case); font-size: .8125rem; }
+    </style>
+  {%- endif -%}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Announcement bar",
+  "class": "section-announcement",
+  "max_blocks": 3,
+  "settings": [
+    { "type": "color_scheme", "id": "color_scheme", "label": "Colour scheme", "default": "scheme-5" },
+    { "type": "checkbox", "id": "label_style", "label": "Use label font", "default": true }
+  ],
+  "blocks": [
+    {
+      "type": "announcement",
+      "name": "Announcement",
+      "settings": [
+        { "type": "inline_richtext", "id": "text", "label": "Text", "default": "Free UK delivery over £40 · Dispatched in 48 hours" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [
+    { "name": "Announcement bar", "blocks": [ { "type": "announcement" } ] }
+  ],
+  "enabled_on": { "groups": ["header"] }
+}
+{% endschema %}

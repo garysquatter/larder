@@ -1,0 +1,342 @@
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign m = product.metafields.larder
+  assign form_id = 'ProductForm-' | append: section.id
+-%}
+<section class="section product-section" style="--pt: 0.35; --pb: 0.5;" data-product data-section="{{ section.id }}">
+  <div class="page-width product">
+    {% render 'product-gallery', product: product, section_id: section.id, current_variant: current_variant, ratio: section.settings.gallery_ratio %}
+
+    <div class="product__info">
+      <div class="product__info-inner stack" style="--gap: 18px;">
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when '@app' -%}
+              {% render block %}
+
+            {%- when 'text' -%}
+              {%- if block.settings.text != blank -%}
+                <p class="{% if block.settings.style == 'label' %}label{% else %}muted{% endif %}" {{ block.shopify_attributes }}>{{ block.settings.text }}</p>
+              {%- endif -%}
+
+            {%- when 'title' -%}
+              <h1 class="h1 product__title" {{ block.shopify_attributes }}>{{ product.title | escape }}</h1>
+
+            {%- when 'price' -%}
+              <div {{ block.shopify_attributes }}>
+                <div data-price class="product__price">{% render 'price', variant: current_variant %}</div>
+                {%- if cart.taxes_included or shop.shipping_policy.body != blank -%}
+                  <p class="muted" style="margin: 4px 0 0; font-size: .8125rem;">
+                    {%- if cart.taxes_included -%}{{ 'products.product.taxes_included' | t }} {% endif -%}
+                    {{ 'products.product.shipping_at_checkout' | t }}
+                  </p>
+                {%- endif -%}
+              </div>
+
+            {%- when 'heat' -%}
+              {%- if m.heat_level.value != blank -%}
+                {%- assign heat = m.heat_level.value | plus: 0 -%}
+                <div class="heat" {{ block.shopify_attributes }}>
+                  <span class="label">{{ 'products.product.heat_label' | t }}</span>
+                  <span class="heat__scale" role="img" aria-label="{{ 'products.product.heat' | t: level: heat }}">
+                    {%- for i in (1..5) -%}
+                      <span class="heat__dot{% if i <= heat %} is-on{% endif %}">{% render 'icon', name: 'flame', stroke: 1.8 %}</span>
+                    {%- endfor -%}
+                  </span>
+                </div>
+              {%- endif -%}
+
+            {%- when 'food_chips' -%}
+              {%- if m.weight.value != blank or m.kcal.value != blank or m.protein.value != blank -%}
+                <div class="product-card__chips" {{ block.shopify_attributes }}>
+                  {%- if m.weight.value != blank -%}<span class="chip chip--card">{{ m.weight.value }}</span>{%- endif -%}
+                  {%- if m.kcal.value != blank -%}<span class="chip chip--card">{{ 'products.product.kcal' | t: value: m.kcal.value }}</span>{%- endif -%}
+                  {%- if m.protein.value != blank -%}<span class="chip chip--card">{{ 'products.product.protein' | t: value: m.protein.value }}</span>{%- endif -%}
+                </div>
+              {%- endif -%}
+
+            {%- when 'dietary' -%}
+              {%- if m.dietary.value != blank -%}
+                <div {{ block.shopify_attributes }}>{% render 'dietary-badges', product: product, limit: 10, size: 'large' %}</div>
+              {%- endif -%}
+
+            {%- when 'delivery' -%}
+              {%- liquid
+                case block.settings.dispatch_days
+                  when 'mon_sat'
+                    assign days = '1,2,3,4,5,6'
+                  when 'every_day'
+                    assign days = '0,1,2,3,4,5,6'
+                  else
+                    assign days = '1,2,3,4,5'
+                endcase
+              -%}
+              <div class="delivery" {{ block.shopify_attributes }}>
+                {%- if block.settings.show_cutoff -%}
+                  <p class="delivery__row" data-cutoff hidden
+                    data-hour="{{ block.settings.cutoff_hour }}"
+                    data-timezone="{{ block.settings.timezone | escape }}"
+                    data-days="{{ days }}"
+                    data-before="{{ block.settings.before_text | escape }}"
+                    data-after="{{ block.settings.after_text | escape }}"
+                    data-tomorrow="{{ 'products.delivery.tomorrow' | t }}">
+                    {% render 'icon', name: 'truck', class: 'delivery__icon' %}<span data-cutoff-text></span>
+                  </p>
+                {%- endif -%}
+                {%- if block.settings.pickup_text != blank -%}
+                  <p class="delivery__row">{% render 'icon', name: 'bag', class: 'delivery__icon' %}<span>{{ block.settings.pickup_text }}</span></p>
+                {%- endif -%}
+                {%- if block.settings.delivery_text != blank -%}
+                  <p class="delivery__row">{% render 'icon', name: 'pin', class: 'delivery__icon' %}<span>{{ block.settings.delivery_text }}</span></p>
+                {%- endif -%}
+              </div>
+
+            {%- when 'variant_picker' -%}
+              {%- unless product.has_only_default_variant -%}
+                <div data-variant-picker class="stack" style="--gap: 18px;" {{ block.shopify_attributes }}>
+                  {%- for option in product.options_with_values -%}
+                    <fieldset class="variant-options">
+                      <legend>{{ option.name | escape }}</legend>
+                      <div class="swatches">
+                        {%- for value in option.values -%}
+                          {%- assign input_id = 'Option-' | append: section.id | append: '-' | append: forloop.parentloop.index | append: '-' | append: forloop.index -%}
+                          <input type="radio" id="{{ input_id }}" name="option-{{ forloop.parentloop.index }}" form="{{ form_id }}" value="{{ value | escape }}"{% if option.selected_value == value %} checked{% endif %}{% unless value.available %} class="is-unavailable"{% endunless %}>
+                          <label for="{{ input_id }}">{{ value | escape }}</label>
+                        {%- endfor -%}
+                      </div>
+                    </fieldset>
+                  {%- endfor -%}
+                </div>
+              {%- endunless -%}
+
+            {%- when 'buy_buttons' -%}
+              <div {{ block.shopify_attributes }}>
+                {%- form 'product', product, id: form_id, data-cart-form: '' -%}
+                  <input type="hidden" name="id" value="{{ current_variant.id }}">
+
+                  {%- if product.selling_plan_groups.size > 0 -%}
+                    <fieldset class="plans">
+                      <legend class="visually-hidden">{{ 'products.product.purchase_options' | t }}</legend>
+                      {%- unless product.requires_selling_plan -%}
+                        <label class="plan">
+                          <input type="radio" name="selling_plan" value="" checked>
+                          <span class="plan__name">{{ 'products.product.one_time' | t }}</span>
+                          <span class="plan__price" data-plan-price="">{{ current_variant.price | money }}</span>
+                        </label>
+                      {%- endunless -%}
+                      {%- for group in product.selling_plan_groups -%}
+                        {%- for plan in group.selling_plans -%}
+                          {%- assign allocation = current_variant.selling_plan_allocations | where: 'selling_plan_id', plan.id | first -%}
+                          <label class="plan">
+                            <input type="radio" name="selling_plan" value="{{ plan.id }}"{% if product.requires_selling_plan and forloop.parentloop.first and forloop.first %} checked{% endif %}>
+                            <span class="plan__name">{{ plan.name | escape }}</span>
+                            <span class="plan__price" data-plan-price="{{ plan.id }}">{% if allocation %}{{ allocation.price | money }}{% endif %}</span>
+                          </label>
+                        {%- endfor -%}
+                      {%- endfor -%}
+                    </fieldset>
+                  {%- endif -%}
+
+                  <div class="buy-row">
+                    <div class="qty qty--lg">
+                      <button type="button" data-qty-step="-1" aria-label="{{ 'products.product.decrease' | t: product: product.title | escape }}">−</button>
+                      <label class="visually-hidden" for="Quantity-{{ section.id }}">{{ 'products.product.quantity' | t }}</label>
+                      <input id="Quantity-{{ section.id }}" type="number" name="quantity" min="1" value="1" inputmode="numeric">
+                      <button type="button" data-qty-step="1" aria-label="{{ 'products.product.increase' | t: product: product.title | escape }}">+</button>
+                    </div>
+                    <button type="submit" class="btn buy-row__btn" data-add-button{% unless current_variant.available %} disabled{% endunless %}>
+                      <span>{%- if current_variant.available -%}{{ 'products.product.add_to_cart' | t }}{%- else -%}{{ 'products.product.sold_out' | t }}{%- endif -%}</span>
+                    </button>
+                  </div>
+                  <p class="form-message" data-form-error role="alert"></p>
+                  {%- if block.settings.show_dynamic_checkout and product.selling_plan_groups.size == 0 -%}
+                    <div class="dynamic-checkout">{{ form | payment_button }}</div>
+                  {%- endif -%}
+                {%- endform -%}
+              </div>
+
+            {%- when 'description' -%}
+              {%- if product.description != blank -%}
+                <div class="rte product__description" {{ block.shopify_attributes }}>{{ product.description }}</div>
+              {%- endif -%}
+
+            {%- when 'nutrition' -%}
+              {%- liquid
+                assign rows = m.nutrition.value | newline_to_br | split: '<br />'
+                assign has_rows = false
+                if m.nutrition.value != blank or m.kcal.value != blank or m.protein.value != blank
+                  assign has_rows = true
+                endif
+              -%}
+              {%- if has_rows -%}
+                <details class="accordion" {% if block.settings.open %}open{% endif %} {{ block.shopify_attributes }}>
+                  <summary><span>{{ block.settings.heading | escape }}</span>{% render 'icon', name: 'plus', class: 'accordion__icon' %}</summary>
+                  <div class="accordion__body">
+                    {%- if block.settings.note != blank -%}<p class="muted" style="margin: 0 0 10px; font-size: .875rem;">{{ block.settings.note | escape }}</p>{%- endif -%}
+                    <table class="table nutrition">
+                      <tbody>
+                        {%- if m.nutrition.value != blank -%}
+                          {%- for row in rows -%}
+                            {%- assign cells = row | strip | split: ':' -%}
+                            {%- if cells.size > 1 -%}
+                              <tr><th scope="row">{{ cells.first | strip | escape }}</th><td>{{ cells | slice: 1, 9 | join: ':' | strip | escape }}</td></tr>
+                            {%- endif -%}
+                          {%- endfor -%}
+                        {%- else -%}
+                          {%- if m.kcal.value != blank -%}<tr><th scope="row">{{ 'products.product.energy' | t }}</th><td>{{ m.kcal.value }} kcal</td></tr>{%- endif -%}
+                          {%- if m.protein.value != blank -%}<tr><th scope="row">{{ 'products.product.protein_label' | t }}</th><td>{{ m.protein.value }}g</td></tr>{%- endif -%}
+                        {%- endif -%}
+                      </tbody>
+                    </table>
+                  </div>
+                </details>
+              {%- endif -%}
+
+            {%- when 'collapsible' -%}
+              {%- liquid
+                case block.settings.source
+                  when 'ingredients'
+                    assign body = m.ingredients.value
+                  when 'allergens'
+                    assign body = m.allergens.value
+                  when 'page'
+                    assign body = block.settings.page.content
+                  else
+                    assign body = block.settings.content
+                endcase
+              -%}
+              {%- if body != blank -%}
+                <details class="accordion" {% if block.settings.open %}open{% endif %} {{ block.shopify_attributes }}>
+                  <summary><span>{{ block.settings.heading | escape }}</span>{% render 'icon', name: 'plus', class: 'accordion__icon' %}</summary>
+                  <div class="accordion__body rte">
+                    {%- if block.settings.source == 'ingredients' or block.settings.source == 'allergens' -%}
+                      <p>{{ body | escape | newline_to_br }}</p>
+                    {%- else -%}
+                      {{ body }}
+                    {%- endif -%}
+                  </div>
+                </details>
+              {%- endif -%}
+          {%- endcase -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+
+  <script type="application/json" data-variants-json>
+    [{%- for v in product.variants -%}{"id": {{ v.id }}, "available": {{ v.available | json }}, "options": {{ v.options | json }}, "media_id": {{ v.featured_media.id | json }}, "price": {{ v.price | money | json }}, "plans": { {%- for a in v.selling_plan_allocations -%}"{{ a.selling_plan_id }}": {{ a.price | money | json }}{% unless forloop.last %},{% endunless %}{%- endfor -%} }, "price_html": {% capture p %}{% render 'price', variant: v %}{% endcapture %}{{ p | strip_newlines | json }}}{% unless forloop.last %},{% endunless %}{%- endfor -%}]
+  </script>
+  <script type="application/ld+json">
+    {{ product | structured_data }}
+  </script>
+</section>
+
+{% schema %}
+{
+  "name": "Product information",
+  "class": "section-main-product",
+  "blocks": [
+    { "type": "@app" },
+    {
+      "type": "text",
+      "name": "Text",
+      "settings": [
+        { "type": "inline_richtext", "id": "text", "label": "Text", "default": "Small batch · Made in the UK" },
+        { "type": "select", "id": "style", "label": "Style", "options": [ { "value": "label", "label": "Label" }, { "value": "body", "label": "Body" } ], "default": "label" }
+      ]
+    },
+    { "type": "title", "name": "Title", "limit": 1 },
+    { "type": "price", "name": "Price", "limit": 1 },
+    {
+      "type": "heat",
+      "name": "Heat level",
+      "limit": 1,
+      "settings": [ { "type": "paragraph", "content": "Shows the larder.heat_level metafield (1–5). Hidden when empty." } ]
+    },
+    {
+      "type": "food_chips",
+      "name": "Food details",
+      "limit": 1,
+      "settings": [ { "type": "paragraph", "content": "Shows weight, calories and protein from larder metafields." } ]
+    },
+    {
+      "type": "dietary",
+      "name": "Dietary labels",
+      "limit": 1,
+      "settings": [ { "type": "paragraph", "content": "Shows the larder.dietary metafield (list of text, e.g. Vegan, Gluten free). Hidden when empty. Add the same metafield as a filter in Search & Discovery to let shoppers filter by diet." } ]
+    },
+    {
+      "type": "delivery",
+      "name": "Delivery and pickup",
+      "limit": 1,
+      "settings": [
+        { "type": "checkbox", "id": "show_cutoff", "label": "Show order cut-off countdown", "default": true },
+        { "type": "range", "id": "cutoff_hour", "min": 6, "max": 23, "step": 1, "unit": "h", "label": "Cut-off time", "default": 14 },
+        {
+          "type": "select", "id": "dispatch_days", "label": "Dispatch days",
+          "options": [
+            { "value": "mon_fri", "label": "Monday to Friday" },
+            { "value": "mon_sat", "label": "Monday to Saturday" },
+            { "value": "every_day", "label": "Every day" }
+          ],
+          "default": "mon_fri"
+        },
+        { "type": "text", "id": "timezone", "label": "Time zone", "default": "Europe/London", "info": "IANA name, for example Europe/London or America/New_York." },
+        { "type": "text", "id": "before_text", "label": "Before cut-off", "default": "Order within [time] for dispatch today", "info": "[time] is replaced with the time left." },
+        { "type": "text", "id": "after_text", "label": "After cut-off", "default": "Order now for dispatch [day]", "info": "[day] is replaced with the next dispatch day." },
+        { "type": "inline_richtext", "id": "pickup_text", "label": "Pickup text", "default": "Free click & collect from our shop" },
+        { "type": "inline_richtext", "id": "delivery_text", "label": "Delivery text", "default": "Chilled UK delivery, next working day" }
+      ]
+    },
+    { "type": "variant_picker", "name": "Variant picker", "limit": 1 },
+    {
+      "type": "buy_buttons",
+      "name": "Buy buttons",
+      "limit": 1,
+      "settings": [
+        { "type": "paragraph", "content": "Subscription options appear automatically when the product has selling plans (for example from Shopify Subscriptions)." },
+        { "type": "checkbox", "id": "show_dynamic_checkout", "label": "Show dynamic checkout buttons", "info": "Hidden on products with subscriptions.", "default": true }
+      ]
+    },
+    { "type": "description", "name": "Description", "limit": 1 },
+    {
+      "type": "nutrition",
+      "name": "Nutrition table",
+      "limit": 1,
+      "settings": [
+        { "type": "paragraph", "content": "Reads larder.nutrition (one line per row, e.g. Fat: 12g). Falls back to calories and protein." },
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Nutrition" },
+        { "type": "text", "id": "note", "label": "Note", "default": "Typical values per 100g" },
+        { "type": "checkbox", "id": "open", "label": "Open by default", "default": false }
+      ]
+    },
+    {
+      "type": "collapsible",
+      "name": "Collapsible tab",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Ingredients" },
+        {
+          "type": "select", "id": "source", "label": "Content",
+          "options": [
+            { "value": "ingredients", "label": "Ingredients (larder.ingredients)" },
+            { "value": "allergens", "label": "Allergens (larder.allergens)" },
+            { "value": "custom", "label": "Custom text" },
+            { "value": "page", "label": "Page" }
+          ],
+          "default": "ingredients"
+        },
+        { "type": "richtext", "id": "content", "label": "Custom text" },
+        { "type": "page", "id": "page", "label": "Page" },
+        { "type": "checkbox", "id": "open", "label": "Open by default", "default": false }
+      ]
+    }
+  ],
+  "settings": [
+    {
+      "type": "select", "id": "gallery_ratio", "label": "Image ratio",
+      "options": [ { "value": "1 / 1", "label": "Square" }, { "value": "4 / 5", "label": "Portrait" } ],
+      "default": "1 / 1"
+    }
+  ]
+}
+{% endschema %}

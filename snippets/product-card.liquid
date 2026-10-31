@@ -1,0 +1,79 @@
+{%- comment -%}
+  Product card.
+  - product: product object (blank renders a placeholder card)
+  - show_description: boolean
+  - heading_tag: 'h3' by default
+  - quick_add: false hides the add button (defaults to shown)
+
+  Food details come from metafields (namespace "larder"):
+  heat_level (integer 1–5), kcal (integer), protein (integer, grams), weight (single line text), badge (single line text),
+  dietary (list of single line text, e.g. Vegan, Gluten free)
+{%- endcomment -%}
+{%- liquid
+  assign tag = heading_tag | default: 'h3'
+  assign m = product.metafields.larder
+  assign badge = m.badge.value
+  if badge == blank and product.compare_at_price > product.price
+    assign badge = 'products.product.on_sale' | t
+  endif
+  if product.available == false and product != blank
+    assign badge = 'products.product.sold_out' | t
+  endif
+-%}
+<article class="product-card">
+  <div class="media product-card__media">
+    {%- if badge != blank -%}<span class="badge">{{ badge }}</span>{%- endif -%}
+    {%- if settings.quick_view != false and product != blank -%}
+      <button type="button" class="product-card__qv" data-quick-view="{{ product.url }}" aria-haspopup="dialog" aria-label="{{ 'products.product.quick_view_named' | t: product: product.title | escape }}">{% render 'icon', name: 'eye' %}</button>
+    {%- endif -%}
+    {%- if product.featured_media -%}
+      {{ product.featured_media | image_url: width: 900 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 25vw, (min-width: 600px) 50vw, 100vw', widths: '360, 540, 720, 900', alt: product.featured_media.alt | default: product.title }}
+      {%- if product.media[1] and product.media[1].media_type == 'image' -%}
+        {{ product.media[1] | image_url: width: 900 | image_tag: loading: 'lazy', sizes: '(min-width: 990px) 25vw, (min-width: 600px) 50vw, 100vw', widths: '360, 540, 720, 900', alt: '' }}
+      {%- endif -%}
+    {%- else -%}
+      {%- assign ph_index = placeholder_index | default: 1 -%}
+      {%- assign ph = 'product-' | append: ph_index -%}
+      {{ ph | placeholder_svg_tag: 'placeholder-svg' }}
+    {%- endif -%}
+  </div>
+  <div class="product-card__body">
+    {%- if m.heat_level.value != blank -%}
+      <p class="label">{{ 'products.product.heat' | t: level: m.heat_level.value }}</p>
+    {%- elsif m.weight.value != blank -%}
+      <p class="label">{{ m.weight.value }}</p>
+    {%- endif -%}
+    <{{ tag }} class="h3 product-card__title">
+      <a href="{{ product.url | default: '#' }}">{{ product.title | default: 'Product title' | escape }}</a>
+    </{{ tag }}>
+    {%- if m.kcal.value != blank or m.protein.value != blank -%}
+      <div class="product-card__chips">
+        {%- if m.kcal.value != blank -%}<span class="chip">{{ 'products.product.kcal' | t: value: m.kcal.value }}</span>{%- endif -%}
+        {%- if m.protein.value != blank -%}<span class="chip">{{ 'products.product.protein' | t: value: m.protein.value }}</span>{%- endif -%}
+      </div>
+    {%- endif -%}
+    {% render 'dietary-badges', product: product, limit: 3 %}
+    {%- if show_description and product.description != blank -%}
+      <p class="product-card__desc">{{ product.description | strip_html | truncatewords: 14 }}</p>
+    {%- endif -%}
+    <div class="product-card__footer">
+      {%- if product != blank -%}
+        {% render 'price', product: product %}
+        {%- if quick_add == false or product.available == false -%}
+          <a href="{{ product.url }}" class="btn btn--small btn--secondary" aria-label="{{ 'products.product.view_named' | t: product: product.title | escape }}">{{ 'products.product.view' | t }}</a>
+        {%- elsif product.has_only_default_variant -%}
+          {%- form 'product', product, data-cart-form: '' -%}
+            <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+            <button type="submit" class="btn btn--small" aria-label="{{ 'products.product.add_named' | t: product: product.title | escape }}">
+              <span>{{ 'products.product.add_to_cart' | t }}</span>
+            </button>
+          {%- endform -%}
+        {%- else -%}
+          <button type="button" class="btn btn--small" data-quick-add="{{ product.url }}" aria-haspopup="dialog" aria-label="{{ 'products.product.choose_named' | t: product: product.title | escape }}">{{ 'products.product.choose' | t }}</button>
+        {%- endif -%}
+      {%- else -%}
+        <span class="price">{{ 1999 | money }}</span>
+      {%- endif -%}
+    </div>
+  </div>
+</article>

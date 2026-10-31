@@ -1,0 +1,66 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}" data-cart-type="{{ settings.cart_type }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="{{ settings.color_schemes['scheme-1'].settings.background }}">
+    <link rel="canonical" href="{{ canonical_url }}">
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- endif -%}
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags %}{% assign meta_tags = current_tags | join: ', ' %} &ndash; {{ 'general.meta.tags' | t: tags: meta_tags }}{% endif -%}
+      {%- if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+    {%- if page_description -%}
+      <meta name="description" content="{{ page_description | escape }}">
+    {%- endif -%}
+
+    {% render 'meta-tags' %}
+    {% render 'theme-styles' %}
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+
+    <script>
+      document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+      window.LarderRoutes = {
+        cart_add_url: '{{ routes.cart_add_url }}',
+        cart_change_url: '{{ routes.cart_change_url }}',
+        cart_url: '{{ routes.cart_url }}'
+      };
+      window.LarderStrings = {
+        addToCart: {{ 'products.product.add_to_cart' | t | json }},
+        soldOut: {{ 'products.product.sold_out' | t | json }},
+        unavailable: {{ 'products.product.unavailable' | t | json }}
+      };
+    </script>
+    <script src="{{ 'global.js' | asset_url }}" defer="defer"></script>
+
+    {{ content_for_header }}
+  </head>
+
+  {%- capture body_hf -%}{% render 'style-value', key: 'heading_font' %}{%- endcapture -%}
+  <body class="template-{{ template.name | handle }} heading-font-{{ body_hf }} color-scheme-1">
+    <a class="skip-link" href="#MainContent">{{ 'accessibility.skip_to_content' | t }}</a>
+
+    {% sections 'header-group' %}
+
+    <main id="MainContent" class="content-for-layout" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {% sections 'footer-group' %}
+
+    {%- if settings.cart_type == 'drawer' -%}
+      {% section 'cart-drawer' %}
+    {%- endif -%}
+
+    <dialog class="quick-add-dialog" id="QuickAddDialog" aria-labelledby="QuickAddTitle" data-quick-add-dialog>
+      <button type="button" class="icon-btn quick-add-dialog__close" data-quick-add-close aria-label="{{ 'general.close' | t }}">{% render 'icon', name: 'close' %}</button>
+      <div class="quick-add-dialog__body" data-quick-add-body></div>
+    </dialog>
+  </body>
+</html>

@@ -1,0 +1,50 @@
+{%- capture items -%}
+  {%- for block in section.blocks -%}
+    <span class="marquee__item" {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</span>
+    {%- if section.settings.separator != blank -%}<span class="marquee__item marquee__sep" aria-hidden="true">{{ section.settings.separator | escape }}</span>{%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- if section.blocks.size > 0 -%}
+  <div class="marquee color-{{ section.settings.color_scheme }}{% unless section.settings.animate %} marquee--static{% endunless %}" style="--speed: {{ section.settings.speed }}s;">
+    {%- if section.settings.animate -%}
+      <div class="marquee__track">
+        <div aria-hidden="false" style="display: inline-flex;">{{ items }}{{ items }}</div>
+        <div aria-hidden="true" style="display: inline-flex;">{{ items }}{{ items }}</div>
+      </div>
+    {%- else -%}
+      <div class="marquee__track">{{ items }}</div>
+    {%- endif -%}
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Scrolling text",
+  "class": "section-marquee",
+  "settings": [
+    { "type": "checkbox", "id": "animate", "label": "Scroll text", "info": "Stops automatically for visitors who prefer reduced motion.", "default": true },
+    { "type": "range", "id": "speed", "label": "Speed (seconds per loop)", "min": 10, "max": 80, "step": 5, "default": 40 },
+    { "type": "text", "id": "separator", "label": "Separator", "default": "—" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Colour scheme", "default": "scheme-3" }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Text",
+      "settings": [ { "type": "text", "id": "text", "label": "Text", "default": "Sauces" } ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Scrolling text",
+      "blocks": [
+        { "type": "item", "settings": { "text": "Sauces" } },
+        { "type": "item", "settings": { "text": "Rubs" } },
+        { "type": "item", "settings": { "text": "Snacks" } },
+        { "type": "item", "settings": { "text": "Gift boxes" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

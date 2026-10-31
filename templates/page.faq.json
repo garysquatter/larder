@@ -1,0 +1,60 @@
+{
+  "sections": {
+    "faq": {
+      "type": "faq",
+      "settings": {
+        "heading": "Questions, answered",
+        "color_scheme": "scheme-1",
+        "padding_top": "0.5",
+        "padding_bottom": "0.75"
+      },
+      "blocks": {
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "How long does delivery take?",
+            "answer": "<p>Orders are dispatched within 48 hours and usually arrive in 2–3 working days across the UK.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "Is delivery free?",
+            "answer": "<p>UK delivery is free on orders over £40. Below that a flat rate is shown at checkout.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Where can I find allergen information?",
+            "answer": "<p>Every product page lists ingredients and allergens in full. If you have a question, get in touch before ordering.</p>"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "Can I pause or cancel my subscription?",
+            "answer": "<p>Yes. Skip, swap or cancel anytime from your account before the next billing date.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "How long do products keep?",
+            "answer": "<p>Unopened products keep for at least 6 months. Best-before dates are printed on every item.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5"
+      ]
+    }
+  },
+  "order": [
+    "faq"
+  ]
+}

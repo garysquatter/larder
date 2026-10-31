@@ -1,0 +1,40 @@
+{%- assign blog = section.settings.blog -%}
+<section class="section color-{{ section.settings.color_scheme }}" style="--pt: {{ section.settings.padding_top }}; --pb: {{ section.settings.padding_bottom }};">
+  <div class="page-width">
+    <div class="section-head">
+      {%- if section.settings.heading != blank -%}<h2 class="h2">{{ section.settings.heading }}</h2>{%- endif -%}
+      {%- if section.settings.link_label != blank and blog != blank -%}
+        <a class="link-arrow" href="{{ blog.url }}">{{ section.settings.link_label | escape }} {% render 'icon', name: 'arrow' %}</a>
+      {%- endif -%}
+    </div>
+    <div class="grid" style="--min: 300px;">
+      {%- if blog != blank and blog.articles_count > 0 -%}
+        {%- for article in blog.articles limit: section.settings.limit -%}
+          {% render 'article-card', article: article %}
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..section.settings.limit) -%}
+          {% render 'article-card', article: blank %}
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Recipes / blog posts",
+  "class": "section-featured-blog",
+  "settings": [
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Cook with it" },
+    { "type": "blog", "id": "blog", "label": "Blog" },
+    { "type": "range", "id": "limit", "label": "Posts to show", "min": 2, "max": 6, "step": 1, "default": 3 },
+    { "type": "text", "id": "link_label", "label": "Link label", "default": "All recipes" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Colour scheme", "default": "scheme-1" },
+    { "type": "header", "content": "Spacing" },
+    { "type": "select", "id": "padding_top", "label": "Top", "options": [ { "value": "0", "label": "None" }, { "value": "0.25", "label": "Small" }, { "value": "0.5", "label": "Medium" }, { "value": "0.75", "label": "Large" } ], "default": "0.5" },
+    { "type": "select", "id": "padding_bottom", "label": "Bottom", "options": [ { "value": "0", "label": "None" }, { "value": "0.25", "label": "Small" }, { "value": "0.5", "label": "Medium" }, { "value": "0.75", "label": "Large" } ], "default": "0.5" }
+  ],
+  "presets": [ { "name": "Recipes / blog posts" } ]
+}
+{% endschema %}

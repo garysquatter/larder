@@ -1,0 +1,108 @@
+{%- paginate collection.products by section.settings.per_page -%}
+{%- liquid
+  assign layout = section.settings.filter_layout
+  assign sort_by = collection.sort_by | default: collection.default_sort_by
+  assign active = 0
+  for filter in collection.filters
+    assign active = active | plus: filter.active_values.size
+    if filter.type == 'price_range'
+      if filter.min_value.value != nil or filter.max_value.value != nil
+        assign active = active | plus: 1
+      endif
+    endif
+  endfor
+  assign drawer_id = 'FilterDrawer-' | append: section.id
+-%}
+<section class="section" style="--pt: 0.4; --pb: 0.6;">
+  <div class="page-width">
+    <div class="collection-hero{% if section.settings.show_image and collection.image %} collection-hero--image{% endif %}">
+      <div class="stack" style="--gap: 14px;">
+        <h1 class="h1">{{ collection.title | escape }}</h1>
+        {%- if collection.description != blank -%}<div class="rte lede">{{ collection.description }}</div>{%- endif -%}
+      </div>
+      {%- if section.settings.show_image and collection.image -%}
+        {% render 'media', image: collection.image, ratio: '16 / 9', sizes: '(min-width: 990px) 40vw, 100vw', eager: true %}
+      {%- endif -%}
+    </div>
+
+    <div class="catalog catalog--{{ layout }}{% unless section.settings.show_filters %} catalog--no-filters{% endunless %}">
+      {%- if section.settings.show_filters and layout == 'sidebar' -%}
+        <aside class="catalog__sidebar">
+          {% render 'facets', results: collection, url: collection.url, sort_options: collection.sort_options, sort_by: sort_by, variant: 'sidebar', prefix: 'S' %}
+        </aside>
+      {%- endif -%}
+
+      <div class="catalog__results" id="CatalogResults">
+        {%- if section.settings.show_filters -%}
+          <div class="catalog__toolbar">
+            <button type="button" class="btn btn--secondary btn--small catalog__open{% if layout != 'drawer' %} catalog__open--mobile{% endif %}" data-filter-open aria-controls="{{ drawer_id }}" aria-haspopup="dialog">
+              {% render 'icon', name: 'filter' %}
+              <span>{{ 'collections.filters.title_sort' | t }}</span>
+              {%- if active > 0 -%}<span class="facet-dd__count">{{ active }}</span>{%- endif -%}
+            </button>
+            {%- if layout == 'horizontal' -%}
+              <div class="catalog__bar">
+                {% render 'facets', results: collection, url: collection.url, sort_options: collection.sort_options, sort_by: sort_by, variant: 'bar', prefix: 'B' %}
+              </div>
+            {%- endif -%}
+            <p class="muted catalog__count" data-results-count="{{ collection.products_count }}">{{ 'collections.general.products_count' | t: count: collection.products_count }}</p>
+          </div>
+          {% render 'active-facets', results: collection, clear_url: collection.url, quick_label: section.settings.quick_filter %}
+        {%- else -%}
+          <p class="muted catalog__count" data-results-count="{{ collection.products_count }}">{{ 'collections.general.products_count' | t: count: collection.products_count }}</p>
+        {%- endif -%}
+
+        {%- if collection.products.size > 0 -%}
+          <div class="grid" style="--min: {% if layout == 'sidebar' %}240px{% else %}260px{% endif %};">
+            {%- for product in collection.products -%}
+              {% render 'product-card', product: product, show_description: section.settings.show_description, heading_tag: 'h2', quick_add: section.settings.quick_add %}
+            {%- endfor -%}
+          </div>
+          {% render 'pagination', paginate: paginate %}
+        {%- else -%}
+          <p class="lede">{{ 'collections.general.empty' | t }}</p>
+          {%- if active > 0 -%}<a class="btn btn--secondary btn--small" href="{{ collection.url }}">{{ 'collections.filters.clear' | t }}</a>{%- endif -%}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  {%- if section.settings.show_filters -%}
+    <dialog class="filter-drawer filter-drawer--{% if layout == 'drawer' %}side{% else %}sheet{% endif %}" id="{{ drawer_id }}" data-filter-drawer data-section-id="{{ section.id }}" aria-labelledby="{{ drawer_id }}-title">
+      <div class="drawer__head">
+        <h2 class="h4" id="{{ drawer_id }}-title">{{ 'collections.filters.title_sort' | t }}</h2>
+        <button type="button" class="icon-btn" data-filter-close aria-label="{{ 'general.close' | t }}">{% render 'icon', name: 'close' %}</button>
+      </div>
+      <div class="drawer__body">
+        {% render 'facets', results: collection, url: collection.url, sort_options: collection.sort_options, sort_by: sort_by, variant: 'panel', prefix: 'D', count: collection.products_count %}
+      </div>
+    </dialog>
+  {%- endif -%}
+</section>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Product grid",
+  "class": "section-main-collection",
+  "settings": [
+    { "type": "range", "id": "per_page", "label": "Products per page", "min": 8, "max": 48, "step": 4, "default": 16 },
+    { "type": "checkbox", "id": "show_image", "label": "Show collection image", "default": false },
+    { "type": "checkbox", "id": "show_description", "label": "Show short product description", "default": false },
+    { "type": "checkbox", "id": "quick_add", "label": "Show quick add button", "default": true },
+    { "type": "header", "content": "Filters" },
+    { "type": "checkbox", "id": "show_filters", "label": "Show filters and sort", "info": "Set up filters with the Shopify Search & Discovery app.", "default": true },
+    {
+      "type": "select", "id": "filter_layout", "label": "Desktop filter layout",
+      "options": [
+        { "value": "sidebar", "label": "Sidebar" },
+        { "value": "horizontal", "label": "Horizontal bar" },
+        { "value": "drawer", "label": "Drawer" }
+      ],
+      "default": "sidebar",
+      "info": "Sidebar suits larger catalogues. Horizontal bar and drawer give products the full width. On mobile, filters always open in a panel."
+    },
+    { "type": "text", "id": "quick_filter", "label": "Quick filter pills", "info": "Name of one filter to show as one-click pills above the products, for example Diet. Leave empty to hide." }
+  ]
+}
+{% endschema %}

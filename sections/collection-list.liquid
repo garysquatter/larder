@@ -1,0 +1,86 @@
+{%- liquid
+  assign style = section.settings.style
+  if style == 'theme'
+    capture style
+      render 'style-value', key: 'category_style'
+    endcapture
+  endif
+  if style == 'circles'
+    assign min_w = '160px'
+  else
+    assign min_w = '240px'
+  endif
+-%}
+<section class="section color-{{ section.settings.color_scheme }}" style="--pt: {{ section.settings.padding_top }}; --pb: {{ section.settings.padding_bottom }};">
+  <div class="page-width">
+    {%- if section.settings.heading != blank -%}
+      <div class="section-head{% if style == 'circles' %} section-head--center{% endif %}">
+        <h2 class="h2">{{ section.settings.heading }}</h2>
+        {%- if section.settings.link_label != blank and style != 'circles' -%}
+          <a class="link-arrow" href="{{ section.settings.link | default: routes.collections_url }}">{{ section.settings.link_label | escape }} {% render 'icon', name: 'arrow' %}</a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+    <div class="grid" style="--min: {{ min_w }};">
+      {%- for block in section.blocks -%}
+        {%- liquid
+          assign c = block.settings.collection
+          assign img = block.settings.image | default: c.featured_image
+          assign title = block.settings.title | default: c.title | default: 'Collection'
+          assign ph = 'collection-' | append: forloop.index
+        -%}
+        <a href="{{ c.url | default: '#' }}" class="collection-tile{% if style == 'circles' %} collection-tile--circle{% endif %}" {{ block.shopify_attributes }}>
+          {%- if style == 'circles' -%}
+            {% render 'media', image: img, class: 'media--circle', placeholder: ph, sizes: '220px' %}
+          {%- else -%}
+            {% render 'media', image: img, ratio: '4 / 5', placeholder: ph, sizes: '(min-width: 990px) 25vw, 50vw' %}
+          {%- endif -%}
+          <span class="collection-tile__name">{{ title | escape }}<span aria-hidden="true">→</span></span>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collection list",
+  "class": "section-collection-list",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Shop by craving" },
+    { "type": "text", "id": "link_label", "label": "Link label", "default": "View all" },
+    { "type": "url", "id": "link", "label": "Link" },
+    {
+      "type": "select", "id": "style", "label": "Style",
+      "options": [
+        { "value": "theme", "label": "Use theme style" },
+        { "value": "tiles", "label": "Tiles" },
+        { "value": "circles", "label": "Circles" }
+      ],
+      "default": "theme"
+    },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Colour scheme", "default": "scheme-1" },
+    { "type": "header", "content": "Spacing" },
+    { "type": "select", "id": "padding_top", "label": "Top", "options": [ { "value": "0", "label": "None" }, { "value": "0.25", "label": "Small" }, { "value": "0.5", "label": "Medium" }, { "value": "0.75", "label": "Large" } ], "default": "0.5" },
+    { "type": "select", "id": "padding_bottom", "label": "Bottom", "options": [ { "value": "0", "label": "None" }, { "value": "0.25", "label": "Small" }, { "value": "0.5", "label": "Medium" }, { "value": "0.75", "label": "Large" } ], "default": "0.5" }
+  ],
+  "blocks": [
+    {
+      "type": "collection",
+      "name": "Collection",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "text", "id": "title", "label": "Custom title" },
+        { "type": "image_picker", "id": "image", "label": "Custom image" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection list",
+      "blocks": [ { "type": "collection" }, { "type": "collection" }, { "type": "collection" }, { "type": "collection" } ]
+    }
+  ]
+}
+{% endschema %}

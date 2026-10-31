@@ -1,0 +1,135 @@
+{%- liquid
+  assign menu = section.settings.menu
+  capture lf
+    render 'style-value', key: 'label_font'
+  endcapture
+  if lf == 'mono'
+    assign nav_class = 'header__nav header__nav--label'
+  else
+    assign nav_class = 'header__nav'
+  endif
+-%}
+{%- liquid
+  assign header_layout = section.settings.layout
+  if header_layout == 'theme'
+    capture header_layout
+      render 'style-value', key: 'header_layout'
+    endcapture
+  endif
+-%}
+<div class="header-wrapper color-{{ section.settings.color_scheme }}{% if section.settings.sticky %} header-wrapper--sticky{% endif %}">
+  <header class="header page-width header--{{ header_layout }}">
+    <details class="menu-drawer">
+      <summary class="icon-btn" aria-label="{{ 'accessibility.menu' | t }}">{% render 'icon', name: 'menu' %}</summary>
+      <div class="menu-drawer__panel color-{{ section.settings.color_scheme }}">
+        <nav aria-label="{{ 'accessibility.menu' | t }}">
+          {%- for link in menu.links -%}
+            <a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+            {%- if link.links.size > 0 -%}
+              <div class="menu-drawer__sub">
+                {%- for child in link.links -%}
+                  <a href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title | escape }}</a>
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+          {%- endfor -%}
+        </nav>
+      </div>
+    </details>
+
+    <div class="header__logo-wrap">
+      <div class="header__logo">
+        <a href="{{ routes.root_url }}" style="text-decoration: none;">
+          {%- if section.settings.logo != blank -%}
+            {%- assign logo_w2 = section.settings.logo_width | times: 2 -%}
+            {%- assign logo_style = '--logo-width: ' | append: section.settings.logo_width | append: 'px;' -%}
+            {{ section.settings.logo | image_url: width: logo_w2 | image_tag: style: logo_style, width: section.settings.logo_width, alt: shop.name, loading: 'eager' }}
+          {%- else -%}
+            {{ shop.name }}{%- if section.settings.logo_dot -%}<span style="color: var(--color-accent);">.</span>{%- endif -%}
+          {%- endif -%}
+        </a>
+      </div>
+    </div>
+
+    <div class="header__nav-wrap">
+      <nav class="{{ nav_class }}" aria-label="{{ 'accessibility.menu' | t }}">
+        {%- for link in menu.links -%}
+          {%- if link.links.size > 0 -%}
+            <details class="dropdown">
+              <summary>{{ link.title | escape }} {% render 'icon', name: 'chevron', class: 'icon-sm' %}</summary>
+              <div class="dropdown__menu color-{{ section.settings.color_scheme }}">
+                {%- for child in link.links -%}
+                  <a href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title | escape }}</a>
+                {%- endfor -%}
+              </div>
+            </details>
+          {%- else -%}
+            <a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+          {%- endif -%}
+        {%- endfor -%}
+      </nav>
+    </div>
+
+    <div class="header__icons">
+      {%- if section.settings.show_search -%}
+        <a href="{{ routes.search_url }}" class="icon-btn" data-search-open aria-label="{{ 'accessibility.search' | t }}">{% render 'icon', name: 'search' %}</a>
+      {%- endif -%}
+      {%- if shop.customer_accounts_enabled and section.settings.show_account -%}
+        <a href="{{ routes.account_url }}" class="icon-btn" aria-label="{{ 'accessibility.account' | t }}">{% render 'icon', name: 'account' %}</a>
+      {%- endif -%}
+      <a href="{{ routes.cart_url }}" class="icon-btn" data-cart-open aria-label="{{ 'accessibility.cart_count' | t: count: cart.item_count }}">
+        {% render 'icon', name: 'cart' %}
+        <span class="cart-count" data-cart-count data-count="{{ cart.item_count }}">{% if cart.item_count > 0 %}{{ cart.item_count }}{% endif %}</span>
+      </a>
+    </div>
+  </header>
+</div>
+
+{%- if section.settings.show_search -%}
+  <dialog class="search-dialog color-{{ section.settings.color_scheme }}" id="SearchDialog" aria-label="{{ 'general.search.title' | t }}" data-predictive-url="{{ routes.predictive_search_url }}">
+    <div class="page-width search-dialog__inner">
+      <form action="{{ routes.search_url }}" method="get" role="search" class="search-dialog__form">
+        <label class="visually-hidden" for="SearchDialogInput">{{ 'general.search.title' | t }}</label>
+        {% render 'icon', name: 'search' %}
+        <input id="SearchDialogInput" type="search" name="q" placeholder="{{ 'general.search.placeholder' | t }}" autocomplete="off" data-predictive-input>
+        <input type="hidden" name="options[prefix]" value="last">
+        <button type="button" class="icon-btn" data-search-close aria-label="{{ 'general.close' | t }}">{% render 'icon', name: 'close' %}</button>
+      </form>
+      <div class="search-dialog__results" data-predictive-results aria-live="polite"></div>
+    </div>
+  </dialog>
+{%- endif -%}
+
+<style>
+  #shopify-section-{{ section.id }} .icon-sm { width: 16px; height: 16px; }
+  {%- if section.settings.sticky -%}
+    #shopify-section-{{ section.id }} { position: sticky; top: 0; z-index: 20; }
+  {%- endif -%}
+</style>
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "section-header",
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "Logo" },
+    { "type": "range", "id": "logo_width", "label": "Logo width", "min": 60, "max": 300, "step": 10, "unit": "px", "default": 140 },
+    { "type": "checkbox", "id": "logo_dot", "label": "Add accent dot after text logo", "default": true },
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" },
+    {
+      "type": "select", "id": "layout", "label": "Layout",
+      "options": [
+        { "value": "theme", "label": "Use theme style" },
+        { "value": "left", "label": "Logo left" },
+        { "value": "center", "label": "Logo centre" }
+      ],
+      "default": "theme"
+    },
+    { "type": "checkbox", "id": "sticky", "label": "Sticky header", "default": true },
+    { "type": "checkbox", "id": "show_search", "label": "Show search", "default": true },
+    { "type": "checkbox", "id": "show_account", "label": "Show account", "default": true },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Colour scheme", "default": "scheme-1" }
+  ],
+  "enabled_on": { "groups": ["header"] }
+}
+{% endschema %}

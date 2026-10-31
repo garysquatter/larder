@@ -1,0 +1,113 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "settings": {}
+    },
+    "menu": {
+      "type": "menu",
+      "blocks": {
+        "c1": {
+          "type": "category",
+          "settings": {
+            "title": "Mains"
+          }
+        },
+        "i1": {
+          "type": "item",
+          "settings": {
+            "name": "Smash burger",
+            "price": "£9.50",
+            "description": "Two beef patties, American cheese, pickles, house sauce."
+          }
+        },
+        "i2": {
+          "type": "item",
+          "settings": {
+            "name": "Halloumi wrap",
+            "price": "£8.00",
+            "description": "Grilled halloumi, harissa yoghurt, pickled red onion.",
+            "tags": "V"
+          }
+        },
+        "i3": {
+          "type": "item",
+          "settings": {
+            "name": "Firecracker chicken",
+            "price": "£10.00",
+            "description": "Buttermilk thighs, chilli honey, slaw.",
+            "tags": "Spicy"
+          }
+        },
+        "i4": {
+          "type": "item",
+          "settings": {
+            "name": "Mushroom melt",
+            "price": "£8.50",
+            "description": "Portobello, smoked cheddar, garlic mayo, brioche.",
+            "tags": "V"
+          }
+        },
+        "c2": {
+          "type": "category",
+          "settings": {
+            "title": "Sides"
+          }
+        },
+        "i5": {
+          "type": "item",
+          "settings": {
+            "name": "Skin-on fries",
+            "price": "£3.50",
+            "description": "Sea salt and rosemary.",
+            "tags": "VG, GF"
+          }
+        },
+        "i6": {
+          "type": "item",
+          "settings": {
+            "name": "Loaded fries",
+            "price": "£5.50",
+            "description": "Cheese sauce, jalapeños, crispy onions.",
+            "tags": "V"
+          }
+        },
+        "i7": {
+          "type": "item",
+          "settings": {
+            "name": "Slaw",
+            "price": "£2.50",
+            "description": "Red cabbage, carrot, lime dressing.",
+            "tags": "VG, GF"
+          }
+        },
+        "i8": {
+          "type": "item",
+          "settings": {
+            "name": "Pickles",
+            "price": "£2.00",
+            "description": "House-pickled cucumber and chilli.",
+            "tags": "VG, GF, Spicy"
+          }
+        }
+      },
+      "block_order": [
+        "c1",
+        "i1",
+        "i2",
+        "i3",
+        "i4",
+        "c2",
+        "i5",
+        "i6",
+        "i7",
+        "i8"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "main",
+    "menu"
+  ]
+}

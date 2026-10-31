@@ -1,0 +1,23 @@
+{%- liquid
+  assign threshold = settings.free_shipping_threshold | default: 0 | times: 100 | times: cart.currency.rate | round
+-%}
+{%- if threshold > 0 and cart.item_count > 0 -%}
+  {%- liquid
+    assign remaining = threshold | minus: cart.total_price
+    assign pct = cart.total_price | times: 100 | divided_by: threshold
+    if pct > 100
+      assign pct = 100
+    endif
+  -%}
+  <div class="ship-bar">
+    <p style="margin: 0 0 8px; font-size: .875rem; font-weight: 600;">
+      {%- if remaining > 0 -%}
+        {%- assign remaining_money = remaining | money -%}
+        {{ 'cart.free_shipping_remaining' | t: amount: remaining_money }}
+      {%- else -%}
+        {{ 'cart.free_shipping_unlocked' | t }}
+      {%- endif -%}
+    </p>
+    <div class="ship-bar__track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ pct }}" aria-label="{{ 'cart.free_shipping_progress' | t }}"><span style="width: {{ pct }}%;"></span></div>
+  </div>
+{%- endif -%}

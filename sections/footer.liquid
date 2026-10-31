@@ -1,0 +1,106 @@
+<footer class="footer color-{{ section.settings.color_scheme }}">
+  <div class="page-width">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <a href="{{ routes.root_url }}" class="header__logo" style="font-size: calc(2.75rem * var(--heading-scale)); display: inline-block;">
+          {%- if section.settings.logo != blank -%}
+            {{ section.settings.logo | image_url: width: 400 | image_tag: width: section.settings.logo_width, alt: shop.name, loading: 'lazy' }}
+          {%- else -%}
+            {{ shop.name }}<span style="color: var(--color-accent);">.</span>
+          {%- endif -%}
+        </a>
+        {%- if section.settings.text != blank -%}<div class="rte muted" style="margin-top: 14px; font-size: .9375rem;">{{ section.settings.text }}</div>{%- endif -%}
+        {%- if section.settings.show_social -%}{% render 'social-icons' %}{%- endif -%}
+      </div>
+      {%- for block in section.blocks -%}
+        {%- case block.type -%}
+          {%- when 'menu' -%}
+            <nav class="footer__menu" aria-label="{{ block.settings.heading | default: block.settings.menu.title | escape }}" {{ block.shopify_attributes }}>
+              <h2 class="label" style="font-size: .8125rem;">{{ block.settings.heading | default: block.settings.menu.title | escape }}</h2>
+              <ul>
+                {%- for link in block.settings.menu.links -%}
+                  <li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>
+                {%- endfor -%}
+              </ul>
+            </nav>
+          {%- when 'hours' -%}
+            <div class="footer__menu footer__hours" {{ block.shopify_attributes }}>
+              {%- if block.settings.heading != blank -%}<h2 class="label" style="font-size: .8125rem;">{{ block.settings.heading | escape }}</h2>{%- endif -%}
+              {%- assign rows = block.settings.hours | newline_to_br | split: '<br />' -%}
+              <dl class="footer__hours-list">
+                {%- for row in rows -%}
+                  {%- assign cells = row | strip | split: ':' -%}
+                  {%- if cells.size > 1 -%}
+                    <div><dt>{{ cells.first | strip | escape }}</dt><dd>{{ cells | slice: 1, 9 | join: ':' | strip | escape }}</dd></div>
+                  {%- elsif row != blank -%}
+                    <div><dt>{{ row | strip | escape }}</dt></div>
+                  {%- endif -%}
+                {%- endfor -%}
+              </dl>
+              {%- if block.settings.address != blank -%}
+                <address class="footer__address">{{ block.settings.address | escape | newline_to_br }}</address>
+              {%- endif -%}
+            </div>
+        {%- endcase -%}
+      {%- endfor -%}
+    </div>
+    <div class="footer__bottom">
+      <p style="margin: 0;">&copy; {{ 'now' | date: '%Y' }} {{ shop.name | link_to: routes.root_url }}{% if section.settings.copyright != blank %} · {{ section.settings.copyright }}{% endif %} · {{ powered_by_link }}{% if section.settings.show_credit %} · <a class="footer__credit" href="https://rawcode.online/?ref=larder" target="_blank" rel="noopener">Theme by Rawcode</a>{% endif %}</p>
+      {%- if section.settings.show_payment and shop.enabled_payment_types.size > 0 -%}
+        <ul class="payment-icons" aria-label="{{ 'accessibility.payment_methods' | t }}">
+          {%- for type in shop.enabled_payment_types -%}
+            <li>{{ type | payment_type_svg_tag }}</li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+  </div>
+</footer>
+
+{% stylesheet %}
+.footer__hours-list { margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.footer__hours-list div { display: flex; justify-content: space-between; gap: 16px; }
+.footer__hours-list dt { color: var(--color-muted); }
+.footer__hours-list dd { margin: 0; font-variant-numeric: tabular-nums; }
+.footer__address { font-style: normal; color: var(--color-muted); line-height: 1.6; margin-top: 6px; }
+.footer__credit { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Footer",
+  "class": "section-footer",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "Logo" },
+    { "type": "range", "id": "logo_width", "label": "Logo width", "min": 60, "max": 300, "step": 10, "unit": "px", "default": 160 },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>Small-batch food, made properly. Add your address or a short brand line here.</p>" },
+    { "type": "checkbox", "id": "show_social", "label": "Show social icons", "info": "Add links in Theme settings › Social media.", "default": true },
+    { "type": "checkbox", "id": "show_payment", "label": "Show payment icons", "default": true },
+    { "type": "inline_richtext", "id": "copyright", "label": "Extra copyright text" },
+    { "type": "checkbox", "id": "show_credit", "label": "Show theme credit", "info": "The free Larder licence requires this credit. Remove it with a white-label licence from rawcode.online.", "default": true },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Colour scheme", "default": "scheme-1" }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Menu",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading" },
+        { "type": "link_list", "id": "menu", "label": "Menu", "default": "footer" }
+      ]
+    },
+    {
+      "type": "hours",
+      "name": "Opening hours",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Opening hours" },
+        { "type": "textarea", "id": "hours", "label": "Hours", "default": "Mon – Fri: 8:00 – 18:00\nSaturday: 9:00 – 17:00\nSunday: Closed", "info": "One line per row. Text before the first colon is the day." },
+        { "type": "textarea", "id": "address", "label": "Address", "default": "12 Market Street\nManchester M1 1AA" }
+      ]
+    }
+  ],
+  "enabled_on": { "groups": ["footer"] }
+}
+{% endschema %}

@@ -1,0 +1,26 @@
+{%- comment -%}
+  Price output. Pass product or variant.
+{%- endcomment -%}
+{%- liquid
+  if variant
+    assign price = variant.price
+    assign compare = variant.compare_at_price
+    assign varies = false
+  else
+    assign price = product.price
+    assign compare = product.compare_at_price
+    assign varies = product.price_varies
+  endif
+-%}
+<span class="price">
+  {%- if compare > price -%}
+    <span class="visually-hidden">{{ 'products.product.sale_price' | t }}</span>
+    {%- if varies -%}{{ 'products.product.from_price' | t: price: price | money }}{%- else -%}{{ price | money }}{%- endif -%}
+    <span class="visually-hidden">{{ 'products.product.regular_price' | t }}</span>
+    <s>{{ compare | money }}</s>
+  {%- elsif varies -%}
+    {{ 'products.product.from_price' | t: price: price | money }}
+  {%- else -%}
+    {{ price | money }}
+  {%- endif -%}
+</span>

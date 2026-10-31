@@ -1,0 +1,15 @@
+{%- comment -%} One gallery item. - media, ratio, eager {%- endcomment -%}
+{%- case media.media_type -%}
+  {%- when 'image' -%}
+    <button type="button" class="gallery__zoom" data-zoom="{{ media | image_url: width: 2400 }}" aria-label="{{ 'products.product.zoom' | t }}">
+      {% render 'media', image: media, ratio: ratio, sizes: '(min-width: 990px) 55vw, 100vw', eager: eager %}
+    </button>
+  {%- when 'video' -%}
+    <div class="media" style="--ratio: {{ ratio }};">{{ media | video_tag: controls: true, preload: 'metadata', image_size: '1200x' }}</div>
+  {%- when 'external_video' -%}
+    <div class="media" style="--ratio: 16 / 9;">{{ media | external_video_tag }}</div>
+  {%- when 'model' -%}
+    <div class="media" style="--ratio: {{ ratio }};">{{ media | model_viewer_tag: image_size: '1200x', reveal: 'interaction', toggleable: true }}</div>
+  {%- else -%}
+    <div class="media" style="--ratio: {{ ratio }};">{{ media | media_tag }}</div>
+{%- endcase -%}

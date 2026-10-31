@@ -1,0 +1,70 @@
+{%- paginate search.results by 24 -%}
+{%- assign encoded_terms = search.terms | url_encode -%}
+<section class="section" style="--pt: 0.4; --pb: 0.6;">
+  <div class="page-width">
+    <h1 class="h1" style="margin-bottom: 24px;">
+      {%- if search.performed -%}{{ 'general.search.results_for' | t: terms: search.terms }}{%- else -%}{{ 'general.search.title' | t }}{%- endif -%}
+    </h1>
+    <form action="{{ routes.search_url }}" method="get" role="search" class="form-row" style="margin-bottom: 36px; max-width: 640px;">
+      <label class="field">
+        <span class="visually-hidden">{{ 'general.search.title' | t }}</span>
+        <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'general.search.placeholder' | t }}">
+      </label>
+      <input type="hidden" name="options[prefix]" value="last">
+      <button type="submit" class="btn" style="min-height: 50px;">{{ 'general.search.submit' | t }}</button>
+    </form>
+    {%- if search.performed -%}
+      {%- assign search_url = routes.search_url | append: '?q=' | append: encoded_terms -%}
+      <div class="catalog catalog--sidebar{% if search.filters.size == 0 %} catalog--no-filters{% endif %}">
+        {%- if search.filters.size > 0 -%}
+          <aside class="catalog__sidebar">
+            {% render 'facets', results: search, url: routes.search_url, sort_options: search.sort_options, sort_by: search.sort_by, terms: search.terms, variant: 'sidebar', prefix: 'S' %}
+          </aside>
+        {%- endif -%}
+        <div class="catalog__results">
+          {%- if search.filters.size > 0 -%}
+            <div class="catalog__toolbar">
+              <button type="button" class="btn btn--secondary btn--small catalog__open catalog__open--mobile" data-filter-open aria-controls="FilterDrawer-{{ section.id }}" aria-haspopup="dialog">{% render 'icon', name: 'filter' %}<span>{{ 'collections.filters.title_sort' | t }}</span></button>
+              <p class="muted catalog__count" data-results-count="{{ search.results_count }}">{{ 'general.search.results_count' | t: count: search.results_count }}</p>
+            </div>
+            {% render 'active-facets', results: search, clear_url: search_url %}
+          {%- endif -%}
+          {%- if search.results_count > 0 -%}
+            {%- if search.filters.size == 0 -%}<p class="muted catalog__count">{{ 'general.search.results_count' | t: count: search.results_count }}</p>{%- endif -%}
+            <div class="grid" style="--min: 240px;">
+              {%- for item in search.results -%}
+                {%- case item.object_type -%}
+                  {%- when 'product' -%}
+                    {% render 'product-card', product: item, heading_tag: 'h2' %}
+                  {%- when 'article' -%}
+                    {% render 'article-card', article: item %}
+                  {%- else -%}
+                    <a href="{{ item.url }}" class="card" style="padding: 24px; text-decoration: none;"><span class="h3">{{ item.title | escape }}</span></a>
+                {%- endcase -%}
+              {%- endfor -%}
+            </div>
+            {% render 'pagination', paginate: paginate %}
+          {%- else -%}
+            <p class="lede">{{ 'general.search.no_results' | t: terms: search.terms }}</p>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+  {%- if search.performed and search.filters.size > 0 -%}
+    <dialog class="filter-drawer filter-drawer--sheet" id="FilterDrawer-{{ section.id }}" data-filter-drawer data-section-id="{{ section.id }}" aria-labelledby="FilterDrawer-{{ section.id }}-title">
+      <div class="drawer__head">
+        <h2 class="h4" id="FilterDrawer-{{ section.id }}-title">{{ 'collections.filters.title_sort' | t }}</h2>
+        <button type="button" class="icon-btn" data-filter-close aria-label="{{ 'general.close' | t }}">{% render 'icon', name: 'close' %}</button>
+      </div>
+      <div class="drawer__body">
+        {% render 'facets', results: search, url: routes.search_url, sort_options: search.sort_options, sort_by: search.sort_by, terms: search.terms, variant: 'panel', prefix: 'D', count: search.results_count %}
+      </div>
+    </dialog>
+  {%- endif -%}
+</section>
+{%- endpaginate -%}
+
+{% schema %}
+{ "name": "Search results", "settings": [] }
+{% endschema %}

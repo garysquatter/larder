@@ -1,0 +1,13 @@
+Larder – Changelog
+
+1.0.0 (31 October 2026)
+- First release
+- Three style presets: Street, Artisan, Fresh
+- Collection filters: sidebar, horizontal bar or drawer, mobile filter panel with live result count, quick filter pills
+- Quick add and quick view on product cards
+- Dietary labels, heat scale, calories, protein, nutrition, ingredients and allergens from metafields
+- Order cut-off countdown with pickup and delivery messages
+- Menu section and Opening hours & location section, with page templates
+- Slide-out cart with free delivery progress bar
+- Predictive search
+- Subscription-ready product form

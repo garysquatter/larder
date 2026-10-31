@@ -1,0 +1,45 @@
+{
+  "type": "footer",
+  "name": "Footer group",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "menu-1": {
+          "type": "menu",
+          "settings": {
+            "heading": "Shop",
+            "menu": "main-menu"
+          }
+        },
+        "menu-2": {
+          "type": "menu",
+          "settings": {
+            "heading": "Help",
+            "menu": "footer"
+          }
+        },
+        "hours": {
+          "type": "hours",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "menu-1",
+        "menu-2",
+        "hours"
+      ],
+      "settings": {
+        "logo_width": 160,
+        "text": "<p>Small-batch food, made properly. Add your address or a short brand line here.</p>",
+        "show_social": true,
+        "show_payment": true,
+        "copyright": "",
+        "color_scheme": "scheme-1"
+      }
+    }
+  },
+  "order": [
+    "footer"
+  ]
+}

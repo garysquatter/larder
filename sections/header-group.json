@@ -1,0 +1,31 @@
+{
+  "type": "header",
+  "name": "Header group",
+  "sections": {
+    "announcement": {
+      "type": "announcement-bar",
+      "blocks": {
+        "announcement-1": {
+          "type": "announcement",
+          "settings": { "text": "Free UK delivery over £40 · Dispatched in 48 hours", "link": "" }
+        }
+      },
+      "block_order": ["announcement-1"],
+      "settings": { "color_scheme": "scheme-5", "label_style": true }
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "logo_width": 140,
+        "logo_dot": true,
+        "menu": "main-menu",
+        "layout": "theme",
+        "sticky": true,
+        "show_search": true,
+        "show_account": true,
+        "color_scheme": "scheme-1"
+      }
+    }
+  },
+  "order": ["announcement", "header"]
+}

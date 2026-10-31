@@ -1,0 +1,36 @@
+<section class="section color-{{ section.settings.color_scheme }}" style="--pt: {{ section.settings.padding_top }}; --pb: {{ section.settings.padding_bottom }};">
+  <div class="page-width faq">
+    {%- if section.settings.heading != blank -%}<h2 class="h2" style="margin-bottom: 28px;">{{ section.settings.heading }}</h2>{%- endif -%}
+    {%- for block in section.blocks -%}
+      <details class="accordion" {{ block.shopify_attributes }}>
+        <summary><span>{{ block.settings.question | escape }}</span>{% render 'icon', name: 'plus', class: 'accordion__icon' %}</summary>
+        <div class="accordion__body rte">{{ block.settings.answer }}</div>
+      </details>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "FAQ",
+  "class": "section-faq",
+  "settings": [
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Questions, answered" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Colour scheme", "default": "scheme-1" },
+    { "type": "header", "content": "Spacing" },
+    { "type": "select", "id": "padding_top", "label": "Top", "options": [ { "value": "0", "label": "None" }, { "value": "0.25", "label": "Small" }, { "value": "0.5", "label": "Medium" }, { "value": "0.75", "label": "Large" } ], "default": "0.5" },
+    { "type": "select", "id": "padding_bottom", "label": "Bottom", "options": [ { "value": "0", "label": "None" }, { "value": "0.25", "label": "Small" }, { "value": "0.5", "label": "Medium" }, { "value": "0.75", "label": "Large" } ], "default": "0.75" }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question", "default": "How long does delivery take?" },
+        { "type": "richtext", "id": "answer", "label": "Answer", "default": "<p>Orders are dispatched within 48 hours and usually arrive in 2–3 working days.</p>" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "FAQ", "blocks": [ { "type": "question" }, { "type": "question" }, { "type": "question" } ] } ]
+}
+{% endschema %}

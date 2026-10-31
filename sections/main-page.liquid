@@ -1,0 +1,10 @@
+<section class="section" style="--pt: 0.4; --pb: 0.6;">
+  <div class="page-width" style="max-width: 820px;">
+    <h1 class="h1" style="margin-bottom: 32px;">{{ page.title | escape }}</h1>
+    <div class="rte">{{ page.content }}</div>
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Page", "settings": [] }
+{% endschema %}

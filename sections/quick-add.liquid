@@ -1,0 +1,45 @@
+{%- comment -%}
+  Rendered on demand through the Section Rendering API (product URL + ?section_id=quick-add)
+  to fill the quick add dialog on product cards. Not added to templates.
+{%- endcomment -%}
+{%- if product -%}
+  {%- assign current_variant = product.selected_or_first_available_variant -%}
+  <div class="quick-add" data-quick-add-content>
+    <div class="quick-add__media media">
+      {%- if product.featured_media -%}
+        {{ product.featured_media | image_url: width: 600 | image_tag: loading: 'eager', sizes: '(min-width: 750px) 240px, 40vw', widths: '240, 400, 600', alt: product.featured_media.alt | default: product.title }}
+      {%- endif -%}
+    </div>
+    <div class="quick-add__info stack" style="--gap: 14px;">
+      <h2 class="h3" id="QuickAddTitle">{{ product.title | escape }}</h2>
+      {% render 'dietary-badges', product: product, limit: 4 %}
+      {%- form 'product', product, data-cart-form: '', class: 'stack', style: '--gap: 14px;' -%}
+        <label class="field">
+          <span class="label">{{ product.options | join: ' / ' | escape }}</span>
+          <select name="id" data-quick-add-select>
+            {%- for v in product.variants -%}
+              <option value="{{ v.id }}"{% if v.id == current_variant.id %} selected{% endif %}{% unless v.available %} disabled{% endunless %}>
+                {{ v.title | escape }} – {{ v.price | money }}{% unless v.available %} ({{ 'products.product.sold_out' | t }}){% endunless %}
+              </option>
+            {%- endfor -%}
+          </select>
+        </label>
+        <div class="buy-row">
+          <div class="qty qty--lg">
+            <button type="button" data-qty-step="-1" aria-label="{{ 'products.product.decrease' | t: product: product.title | escape }}">−</button>
+            <label class="visually-hidden" for="QuickAddQty">{{ 'products.product.quantity' | t }}</label>
+            <input id="QuickAddQty" type="number" name="quantity" min="1" value="1" inputmode="numeric">
+            <button type="button" data-qty-step="1" aria-label="{{ 'products.product.increase' | t: product: product.title | escape }}">+</button>
+          </div>
+          <button type="submit" class="btn buy-row__btn"{% unless product.available %} disabled{% endunless %}>{{ 'products.product.add_to_cart' | t }}</button>
+        </div>
+        <p class="form-message" data-form-error role="alert"></p>
+      {%- endform -%}
+      <a class="link-underline" href="{{ product.url }}">{{ 'products.product.full_details' | t }}</a>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{ "name": "Quick add", "settings": [] }
+{% endschema %}

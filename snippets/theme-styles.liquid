@@ -1,0 +1,155 @@
+{%- comment -%}
+  Fonts (bundled OFL fonts or Shopify font library) and global CSS variables.
+{%- endcomment -%}
+{%- capture hf -%}{% render 'style-value', key: 'heading_font' %}{%- endcapture -%}
+{%- capture s_heading_case -%}{% render 'style-value', key: 'heading_case' %}{%- endcapture -%}
+{%- capture s_heading_ls -%}{% render 'style-value', key: 'heading_letter_spacing' %}{%- endcapture -%}
+{%- capture s_label_font -%}{% render 'style-value', key: 'label_font' %}{%- endcapture -%}
+{%- capture s_label_case -%}{% render 'style-value', key: 'label_case' %}{%- endcapture -%}
+{%- capture s_button_style -%}{% render 'style-value', key: 'button_style' %}{%- endcapture -%}
+{%- capture s_card_radius -%}{% render 'style-value', key: 'card_radius' %}{%- endcapture -%}
+{%- capture s_image_radius -%}{% render 'style-value', key: 'image_radius' %}{%- endcapture -%}
+{%- capture s_spacing -%}{% render 'style-value', key: 'section_spacing' %}{%- endcapture -%}
+{%- liquid
+  case hf
+    when 'bebas'
+      assign heading_family = "'Bebas Neue', 'Arial Narrow', sans-serif"
+      assign heading_weight = 400
+      assign heading_weight_strong = 400
+      assign heading_size_adjust = 1.2
+      assign heading_line = 0.9
+    when 'fraunces'
+      assign heading_family = "'Fraunces', Georgia, serif"
+      assign heading_weight = 400
+      assign heading_weight_strong = 400
+      assign heading_size_adjust = 0.92
+      assign heading_line = 1.05
+    when 'bricolage'
+      assign heading_family = "'Bricolage Grotesque', system-ui, sans-serif"
+      assign heading_weight = 700
+      assign heading_weight_strong = 800
+      assign heading_size_adjust = 1
+      assign heading_line = 1
+    else
+      assign heading_family = settings.heading_font_library.family | append: ', ' | append: settings.heading_font_library.fallback_families
+      assign heading_weight = settings.heading_font_library.weight
+      assign heading_weight_strong = settings.heading_font_library.weight
+      assign heading_size_adjust = 1
+      assign heading_line = 1.05
+  endcase
+
+  if settings.body_font == 'library'
+    assign body_family = settings.body_font_library.family | append: ', ' | append: settings.body_font_library.fallback_families
+    assign body_bold = settings.body_font_library | font_modify: 'weight', 'bold'
+  else
+    assign body_family = "'Inter', system-ui, -apple-system, sans-serif"
+  endif
+
+  if s_label_font == 'mono'
+    assign label_family = "'JetBrains Mono', ui-monospace, Menlo, monospace"
+    assign label_tracking = '0.1em'
+    assign label_weight = 600
+  else
+    assign label_family = 'var(--font-body)'
+    if s_label_case == 'uppercase'
+      assign label_tracking = '0.14em'
+    else
+      assign label_tracking = '0'
+    endif
+    assign label_weight = 600
+  endif
+
+  case s_button_style
+    when 'pill'
+      assign button_radius = '999px'
+    when 'rounded'
+      assign button_radius = '10px'
+    else
+      assign button_radius = '0px'
+  endcase
+-%}
+
+{%- case hf -%}
+  {%- when 'bebas' -%}
+    {{ 'font-bebas-neue-latin-400-normal.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+  {%- when 'fraunces' -%}
+    {{ 'font-fraunces-latin-400-normal.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+  {%- when 'bricolage' -%}
+    {{ 'font-bricolage-grotesque-latin-800-normal.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+{%- endcase -%}
+{%- if settings.body_font == 'inter' -%}
+  {{ 'font-inter-latin-400-normal.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+{%- endif -%}
+
+<style>
+  {%- case hf -%}
+    {%- when 'bebas' -%}
+      @font-face { font-family: 'Bebas Neue'; font-weight: 400; font-style: normal; font-display: swap; src: url('{{ 'font-bebas-neue-latin-400-normal.woff2' | asset_url }}') format('woff2'); }
+    {%- when 'fraunces' -%}
+      @font-face { font-family: 'Fraunces'; font-weight: 400; font-style: normal; font-display: swap; src: url('{{ 'font-fraunces-latin-400-normal.woff2' | asset_url }}') format('woff2'); }
+      @font-face { font-family: 'Fraunces'; font-weight: 400; font-style: italic; font-display: swap; src: url('{{ 'font-fraunces-latin-400-italic.woff2' | asset_url }}') format('woff2'); }
+      @font-face { font-family: 'Fraunces'; font-weight: 500; font-style: normal; font-display: swap; src: url('{{ 'font-fraunces-latin-500-normal.woff2' | asset_url }}') format('woff2'); }
+    {%- when 'bricolage' -%}
+      @font-face { font-family: 'Bricolage Grotesque'; font-weight: 600; font-style: normal; font-display: swap; src: url('{{ 'font-bricolage-grotesque-latin-600-normal.woff2' | asset_url }}') format('woff2'); }
+      @font-face { font-family: 'Bricolage Grotesque'; font-weight: 700; font-style: normal; font-display: swap; src: url('{{ 'font-bricolage-grotesque-latin-700-normal.woff2' | asset_url }}') format('woff2'); }
+      @font-face { font-family: 'Bricolage Grotesque'; font-weight: 800; font-style: normal; font-display: swap; src: url('{{ 'font-bricolage-grotesque-latin-800-normal.woff2' | asset_url }}') format('woff2'); }
+    {%- else -%}
+      {{ settings.heading_font_library | font_face: font_display: 'swap' }}
+  {%- endcase -%}
+
+  {%- if settings.body_font == 'library' -%}
+    {{ settings.body_font_library | font_face: font_display: 'swap' }}
+    {{ body_bold | font_face: font_display: 'swap' }}
+  {%- else -%}
+    @font-face { font-family: 'Inter'; font-weight: 400; font-style: normal; font-display: swap; src: url('{{ 'font-inter-latin-400-normal.woff2' | asset_url }}') format('woff2'); }
+    @font-face { font-family: 'Inter'; font-weight: 500; font-style: normal; font-display: swap; src: url('{{ 'font-inter-latin-500-normal.woff2' | asset_url }}') format('woff2'); }
+    @font-face { font-family: 'Inter'; font-weight: 600; font-style: normal; font-display: swap; src: url('{{ 'font-inter-latin-600-normal.woff2' | asset_url }}') format('woff2'); }
+    @font-face { font-family: 'Inter'; font-weight: 700; font-style: normal; font-display: swap; src: url('{{ 'font-inter-latin-700-normal.woff2' | asset_url }}') format('woff2'); }
+  {%- endif -%}
+
+  {%- if s_label_font == 'mono' -%}
+    @font-face { font-family: 'JetBrains Mono'; font-weight: 500; font-style: normal; font-display: swap; src: url('{{ 'font-jetbrains-mono-latin-500-normal.woff2' | asset_url }}') format('woff2'); }
+    @font-face { font-family: 'JetBrains Mono'; font-weight: 600; font-style: normal; font-display: swap; src: url('{{ 'font-jetbrains-mono-latin-600-normal.woff2' | asset_url }}') format('woff2'); }
+  {%- endif -%}
+
+  :root {
+    --font-heading: {{ heading_family }};
+    --font-body: {{ body_family }};
+    --font-label: {{ label_family }};
+    --heading-weight: {{ heading_weight }};
+    --heading-weight-strong: {{ heading_weight_strong }};
+    --heading-case: {{ s_heading_case }};
+    --heading-tracking: {{ s_heading_ls | times: 0.01 }}em;
+    --heading-line: {{ heading_line }};
+    --heading-scale: {{ settings.heading_scale | divided_by: 100.0 | times: heading_size_adjust }};
+    --label-case: {{ s_label_case }};
+    --label-tracking: {{ label_tracking }};
+    --label-weight: {{ label_weight }};
+    --page-width: {{ settings.page_width }}px;
+    --section-spacing: {{ s_spacing }}px;
+    --button-radius: {{ button_radius }};
+    --card-radius: {{ s_card_radius }}px;
+    --image-radius: {{ s_image_radius }}px;
+  }
+
+  {% for scheme in settings.color_schemes -%}
+    .color-{{ scheme.id }} {
+      --color-bg: {{ scheme.settings.background }};
+      --color-text: {{ scheme.settings.text }};
+      --color-muted: {{ scheme.settings.muted }};
+      --color-accent: {{ scheme.settings.accent }};
+      --color-button: {{ scheme.settings.button }};
+      --color-button-label: {{ scheme.settings.button_label }};
+      --color-secondary-button-label: {{ scheme.settings.secondary_button_label }};
+      --color-card: {{ scheme.settings.card }};
+      --color-border: {{ scheme.settings.border }};
+      --color-text-rgb: {{ scheme.settings.text.red }}, {{ scheme.settings.text.green }}, {{ scheme.settings.text.blue }};
+      background-color: var(--color-bg);
+      {%- if scheme.settings.background_gradient != blank %}
+      background-image: {{ scheme.settings.background_gradient }};
+      {%- endif %}
+      color: var(--color-text);
+    }
+  {% endfor %}
+  {% render 'preset-colors' %}
+</style>

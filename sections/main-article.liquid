@@ -1,0 +1,18 @@
+<article class="section" style="--pt: 0.4; --pb: 0.6;">
+  <div class="page-width" style="max-width: 860px;">
+    <p class="label" style="margin-bottom: 14px;">{{ article.published_at | time_tag: format: 'date' }}{% if article.tags.size > 0 %} · {{ article.tags | join: ', ' }}{% endif %}</p>
+    <h1 class="h1">{{ article.title | escape }}</h1>
+    {%- if article.image -%}
+      <div style="margin: 36px 0;">{% render 'media', image: article.image, ratio: '3 / 2', sizes: '(min-width: 900px) 860px, 100vw', eager: true %}</div>
+    {%- endif -%}
+    <div class="rte" style="font-size: 1.0625rem;">{{ article.content }}</div>
+    <p style="margin-top: 48px;"><a class="link-underline" href="{{ blog.url }}">{{ 'blogs.article.back_to_blog' | t: title: blog.title }}</a></p>
+  </div>
+  <script type="application/ld+json">
+    {{ article | structured_data }}
+  </script>
+</article>
+
+{% schema %}
+{ "name": "Blog post", "settings": [] }
+{% endschema %}

@@ -1,0 +1,114 @@
+{%- comment -%}
+  Storefront filters (Search & Discovery) and sort.
+  - results: collection or search object
+  - url: base url for clearing
+  - sort_options, sort_by
+  - terms: search terms (search page only)
+  - variant: 'sidebar' (default), 'bar' (horizontal dropdowns) or 'panel' (drawer, applies on submit)
+  - prefix: unique id prefix when the snippet is rendered more than once
+{%- endcomment -%}
+{%- liquid
+  assign variant = variant | default: 'sidebar'
+  assign prefix = prefix | default: 'F'
+  assign clear_url = url
+  if terms != blank
+    assign encoded_terms = terms | url_encode
+    assign clear_url = url | append: '?q=' | append: encoded_terms
+  endif
+  assign result_count = count | default: results.products_count | default: 0
+-%}
+<form class="facets facets--{{ variant }}" data-facets{% if variant == 'panel' %} data-facets-deferred{% endif %} action="{{ url }}" method="get">
+  {%- if terms != blank -%}
+    <input type="hidden" name="q" value="{{ terms | escape }}">
+    <input type="hidden" name="options[prefix]" value="last">
+  {%- endif -%}
+
+  {%- capture sort_field -%}
+    {%- if sort_options.size > 0 -%}
+      <label class="facets__sort">
+        <span class="{% if variant == 'panel' %}facets__label{% else %}visually-hidden{% endif %}">{{ 'collections.general.sort_by' | t }}</span>
+        <select name="sort_by" data-facet-input>
+          {%- for option in sort_options -%}
+            <option value="{{ option.value | escape }}"{% if option.value == sort_by %} selected{% endif %}>{{ option.name | escape }}</option>
+          {%- endfor -%}
+        </select>
+      </label>
+    {%- endif -%}
+  {%- endcapture -%}
+
+  {%- if variant == 'sidebar' -%}
+    <div class="facets__head">
+      <h2 class="h4">{{ 'collections.filters.title' | t }}</h2>
+      {{ sort_field }}
+    </div>
+  {%- elsif variant == 'panel' -%}
+    {{ sort_field }}
+  {%- endif -%}
+
+  {%- if variant == 'bar' -%}<div class="facets__bar">{%- endif -%}
+
+  {%- for filter in results.filters -%}
+    {%- capture filter_body -%}
+      {%- case filter.type -%}
+        {%- when 'price_range' -%}
+          <div class="facet__price">
+            <label class="field">{{ 'collections.filters.from' | t }}
+              <input type="number" name="{{ filter.min_value.param_name }}" value="{% if filter.min_value.value %}{{ filter.min_value.value | money_without_currency | replace: ',', '' }}{% endif %}" min="0" placeholder="0" inputmode="decimal" data-facet-input>
+            </label>
+            <label class="field">{{ 'collections.filters.to' | t }}
+              <input type="number" name="{{ filter.max_value.param_name }}" value="{% if filter.max_value.value %}{{ filter.max_value.value | money_without_currency | replace: ',', '' }}{% endif %}" min="0" placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}" inputmode="decimal" data-facet-input>
+            </label>
+          </div>
+        {%- else -%}
+          <ul class="facet__list" role="list">
+            {%- for value in filter.values -%}
+              {%- assign fid = prefix | append: '-' | append: filter.param_name | handle | append: '-' | append: forloop.index -%}
+              <li>
+                <input type="checkbox" id="{{ fid }}" name="{{ value.param_name }}" value="{{ value.value }}"{% if value.active %} checked{% endif %}{% if value.count == 0 and value.active == false %} disabled{% endif %} data-facet-input>
+                <label for="{{ fid }}">{{ value.label | escape }} <span class="muted">({{ value.count }})</span></label>
+              </li>
+            {%- endfor -%}
+          </ul>
+      {%- endcase -%}
+    {%- endcapture -%}
+
+    {%- liquid
+      assign active_count = filter.active_values.size
+      if filter.type == 'price_range'
+        if filter.min_value.value != nil or filter.max_value.value != nil
+          assign active_count = 1
+        endif
+      endif
+    -%}
+
+    {%- if variant == 'bar' -%}
+      <details class="facet-dd" data-facet-dd>
+        <summary class="facet-dd__btn">
+          <span>{{ filter.label | escape }}</span>
+          {%- if active_count > 0 -%}<span class="facet-dd__count">{{ active_count }}</span>{%- endif -%}
+          {% render 'icon', name: 'chevron', class: 'facet-dd__icon' %}
+        </summary>
+        <div class="facet-dd__panel">{{ filter_body }}</div>
+      </details>
+    {%- else -%}
+      <details class="accordion facet"{% if active_count > 0 or forloop.index <= 2 %} open{% endif %}>
+        <summary><span>{{ filter.label | escape }}{% if active_count > 0 %} <span class="facet-dd__count">{{ active_count }}</span>{% endif %}</span>{% render 'icon', name: 'plus', class: 'accordion__icon' %}</summary>
+        <div class="accordion__body">{{ filter_body }}</div>
+      </details>
+    {%- endif -%}
+  {%- endfor -%}
+
+  {%- if variant == 'bar' -%}
+    <div class="facets__bar-end">{{ sort_field }}</div>
+    </div>
+  {%- endif -%}
+
+  {%- if variant == 'panel' -%}
+    <div class="facets__foot">
+      <a class="link-underline" href="{{ clear_url }}">{{ 'collections.filters.clear' | t }}</a>
+      <button type="submit" class="btn" data-facets-submit data-label="{{ 'collections.filters.show_results' | t: count: '[count]' }}">{{ 'collections.filters.show_results' | t: count: result_count }}</button>
+    </div>
+  {%- else -%}
+    <noscript><button type="submit" class="btn btn--small">{{ 'collections.filters.apply' | t }}</button></noscript>
+  {%- endif -%}
+</form>

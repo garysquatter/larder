@@ -1,0 +1,27 @@
+{%- comment -%}
+  Responsive image in a ratio box.
+  - image: image object (optional)
+  - ratio: CSS aspect-ratio, e.g. '4 / 5' (optional)
+  - class: extra classes
+  - sizes: sizes attribute
+  - placeholder: placeholder_svg_tag name (default 'image')
+  - eager: true for above-the-fold images
+  - alt: alt override
+{%- endcomment -%}
+<div class="media {{ class }}"{% if ratio %} style="--ratio: {{ ratio }};"{% endif %}>
+  {%- if image != blank -%}
+    {%- liquid
+      if eager
+        assign loading = 'eager'
+        assign priority = 'high'
+      else
+        assign loading = 'lazy'
+        assign priority = 'auto'
+      endif
+      assign alt_text = alt | default: image.alt | escape
+    -%}
+    {{ image | image_url: width: 2400 | image_tag: loading: loading, fetchpriority: priority, sizes: sizes, widths: '360, 540, 720, 900, 1080, 1440, 1800, 2400', alt: alt_text }}
+  {%- else -%}
+    {{ placeholder | default: 'image' | placeholder_svg_tag: 'placeholder-svg' }}
+  {%- endif -%}
+</div>

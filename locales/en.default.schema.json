@@ -1,0 +1,115 @@
+{
+  "settings_schema": {
+    "style": {
+      "name": "Style",
+      "settings": {
+        "style_preset": {
+          "label": "Style preset",
+          "info": "Street, Artisan and Fresh set colours, fonts, shapes and layouts in one go. Choose Custom to use your own settings below and in Colours, Typography and Buttons and shapes.",
+          "options__1": { "label": "Street — bold and dark" },
+          "options__2": { "label": "Artisan — warm and crafted" },
+          "options__3": { "label": "Fresh — clean and bright" },
+          "options__4": { "label": "Custom" }
+        },
+        "paragraph": { "content": "The options below only apply when Style preset is set to Custom." },
+        "hero_layout": {
+          "label": "Hero layout",
+          "options__1": { "label": "Full-width image" },
+          "options__2": { "label": "Split, text and image" },
+          "options__3": { "label": "Centred, image below" }
+        },
+        "feature_image_shape": {
+          "label": "Feature image shape",
+          "options__1": { "label": "Standard" },
+          "options__2": { "label": "Arch" }
+        },
+        "category_style": {
+          "label": "Collection list style",
+          "options__1": { "label": "Tiles" },
+          "options__2": { "label": "Circles" }
+        }
+      }
+    },
+    "colors": {
+      "name": "Colours",
+      "settings": {
+        "background": { "label": "Background" },
+        "background_gradient": { "label": "Background gradient", "info": "Replaces the solid background where supported." },
+        "text": { "label": "Text" },
+        "muted": { "label": "Secondary text" },
+        "accent": { "label": "Accent", "info": "Labels, links on hover and small highlights. Keep enough contrast with the background." },
+        "button": { "label": "Button background" },
+        "button_label": { "label": "Button label" },
+        "secondary_button_label": { "label": "Outline button" },
+        "card": { "label": "Cards and image placeholders", "info": "Product cards, reviews and empty image areas." },
+        "border": { "label": "Borders" }
+      }
+    },
+    "typography": {
+      "name": "Typography",
+      "settings": {
+        "header__1": { "content": "Headings" },
+        "header__2": { "content": "Body" },
+        "header__3": { "content": "Labels" },
+        "font_library_option": "Choose from Shopify font library",
+        "heading_font": { "label": "Heading font" },
+        "heading_font_library": { "label": "Heading font from library" },
+        "heading_case": { "label": "Heading case" },
+        "case": {
+          "options__1": { "label": "As typed" },
+          "options__2": { "label": "Uppercase" }
+        },
+        "heading_scale": { "label": "Heading size" },
+        "heading_letter_spacing": { "label": "Heading letter spacing" },
+        "body_font": { "label": "Body font" },
+        "body_font_library": { "label": "Body font from library" },
+        "label_font": {
+          "label": "Label font",
+          "info": "Small labels above headings, badges and prices.",
+          "options__2": { "label": "Same as body" }
+        },
+        "label_case": { "label": "Label case" }
+      }
+    },
+    "layout": {
+      "name": "Layout",
+      "settings": {
+        "page_width": { "label": "Page width" },
+        "section_spacing": { "label": "Space between sections" }
+      }
+    },
+    "shapes": {
+      "name": "Buttons and shapes",
+      "settings": {
+        "button_style": {
+          "label": "Button shape",
+          "options__1": { "label": "Square" },
+          "options__2": { "label": "Rounded" },
+          "options__3": { "label": "Pill" }
+        },
+        "card_radius": { "label": "Card corner radius" },
+        "image_radius": { "label": "Image corner radius" }
+      }
+    },
+    "cart": {
+      "name": "Cart",
+      "settings": {
+        "cart_type": {
+          "label": "Cart type",
+          "options__1": { "label": "Drawer" },
+          "options__2": { "label": "Page" }
+        },
+        "free_shipping_threshold": { "label": "Free delivery from", "info": "Shows a progress bar in the cart. Amount in your store currency. Set to 0 to hide." },
+        "show_cart_note": { "label": "Show order note in cart drawer" },
+        "cart_note_text": { "label": "Cart message", "info": "Short line shown above checkout, for example delivery days." }
+      }
+    },
+    "social": { "name": "Social media" },
+    "favicon": {
+      "name": "Favicon",
+      "settings": {
+        "favicon": { "label": "Favicon image", "info": "Shown at 32 × 32px." }
+      }
+    }
+  }
+}

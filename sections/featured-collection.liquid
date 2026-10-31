@@ -1,0 +1,45 @@
+{%- assign collection = section.settings.collection -%}
+<section class="section color-{{ section.settings.color_scheme }}" style="--pt: {{ section.settings.padding_top }}; --pb: {{ section.settings.padding_bottom }};">
+  <div class="page-width">
+    <div class="section-head">
+      <div class="stack" style="--gap: 8px;">
+        {%- if section.settings.eyebrow != blank -%}<p class="label">{{ section.settings.eyebrow | escape }}</p>{%- endif -%}
+        {%- if section.settings.heading != blank -%}<h2 class="h2">{{ section.settings.heading }}</h2>{%- endif -%}
+      </div>
+      {%- if section.settings.link_label != blank -%}
+        <a class="link-arrow" href="{{ collection.url | default: routes.all_products_collection_url }}">{{ section.settings.link_label | escape }} {% render 'icon', name: 'arrow' %}</a>
+      {%- endif -%}
+    </div>
+    <div class="grid" style="--min: 260px;">
+      {%- if collection != blank and collection.products_count > 0 -%}
+        {%- for product in collection.products limit: section.settings.limit -%}
+          {% render 'product-card', product: product, show_description: section.settings.show_description %}
+        {%- endfor -%}
+      {%- else -%}
+        {%- for i in (1..section.settings.limit) -%}
+          {% render 'product-card', product: blank, placeholder_index: i %}
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Featured collection",
+  "class": "section-featured-collection",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Label", "default": "The line-up" },
+    { "type": "inline_richtext", "id": "heading", "label": "Heading", "default": "Bestsellers" },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "range", "id": "limit", "label": "Products to show", "min": 2, "max": 12, "step": 1, "default": 4 },
+    { "type": "checkbox", "id": "show_description", "label": "Show short description", "default": true },
+    { "type": "text", "id": "link_label", "label": "Link label", "default": "Shop all" },
+    { "type": "color_scheme", "id": "color_scheme", "label": "Colour scheme", "default": "scheme-1" },
+    { "type": "header", "content": "Spacing" },
+    { "type": "select", "id": "padding_top", "label": "Top", "options": [ { "value": "0", "label": "None" }, { "value": "0.25", "label": "Small" }, { "value": "0.5", "label": "Medium" }, { "value": "0.75", "label": "Large" } ], "default": "0.5" },
+    { "type": "select", "id": "padding_bottom", "label": "Bottom", "options": [ { "value": "0", "label": "None" }, { "value": "0.25", "label": "Small" }, { "value": "0.5", "label": "Medium" }, { "value": "0.75", "label": "Large" } ], "default": "0.5" }
+  ],
+  "presets": [ { "name": "Featured collection" } ]
+}
+{% endschema %}

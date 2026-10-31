@@ -1,0 +1,17 @@
+<section class="section" style="--pt: .5; --pb: .75;">
+  <div class="page-width narrow stack" style="--gap: 20px;">
+    <h1 class="h1">{{ 'customer.activate.title' | t }}</h1>
+    {%- form 'activate_customer_password' -%}
+      <div class="stack" style="--gap: 14px;">
+        {%- if form.errors -%}<div class="form-message" role="alert">{{ form.errors | default_errors }}</div>{%- endif -%}
+        <label class="field" for="ActPassword">{{ 'customer.fields.password' | t }}<input type="password" name="customer[password]" id="ActPassword" autocomplete="new-password" required></label>
+        <label class="field" for="ActConfirm">{{ 'customer.fields.password_confirm' | t }}<input type="password" name="customer[password_confirmation]" id="ActConfirm" autocomplete="new-password" required></label>
+        <button type="submit" class="btn btn--full">{{ 'customer.activate.submit' | t }}</button>
+      </div>
+    {%- endform -%}
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Activate account", "settings": [] }
+{% endschema %}

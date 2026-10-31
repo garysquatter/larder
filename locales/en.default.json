@@ -1,0 +1,245 @@
+{
+  "general": {
+    "meta": {
+      "tags": "Tagged \"{{ tags }}\"",
+      "page": "Page {{ page }}"
+    },
+    "pagination": {
+      "label": "Pagination",
+      "previous": "Previous page",
+      "next": "Next page",
+      "page": "Page {{ number }}"
+    },
+    "password_page": {
+      "login_form_heading": "Enter store using password",
+      "login_password_button": "Enter",
+      "login_form_password_label": "Password",
+      "login_form_error": "Wrong password",
+      "opening_soon": "Opening soon"
+    },
+    "search": {
+      "title": "Search",
+      "placeholder": "Search products",
+      "submit": "Search",
+      "results_for": "Results for \"{{ terms }}\"",
+      "no_results": "No results found for \"{{ terms }}\". Try a different word.",
+      "results_count": {
+        "one": "{{ count }} result",
+        "other": "{{ count }} results"
+      },
+      "products": "Products",
+      "more": "Collections and recipes",
+      "view_all": "See all results for \"{{ terms }}\""
+    },
+    "social": {
+      "label": "{{ name }} (opens in a new tab)"
+    },
+    "continue_shopping": "Continue shopping",
+    "view_all": "View all",
+    "read_more": "Read more",
+    "close": "Close"
+  },
+  "accessibility": {
+    "skip_to_content": "Skip to content",
+    "menu": "Menu",
+    "close_menu": "Close menu",
+    "search": "Search",
+    "account": "Account",
+    "cart_count": {
+      "one": "Cart, {{ count }} item",
+      "other": "Cart, {{ count }} items"
+    },
+    "rating": "{{ rating }} out of 5 stars",
+    "payment_methods": "Payment methods"
+  },
+  "header": {
+    "cart": "Cart"
+  },
+  "newsletter": {
+    "email": "Email address",
+    "placeholder": "you@example.com",
+    "subscribe": "Sign up",
+    "success": "Thanks for signing up.",
+    "error": "Please check your email address."
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Add to cart",
+      "sold_out": "Sold out",
+      "unavailable": "Unavailable",
+      "on_sale": "Sale",
+      "quantity": "Quantity",
+      "decrease": "Decrease quantity for {{ product }}",
+      "increase": "Increase quantity for {{ product }}",
+      "heat": "Heat {{ level }}/5",
+      "kcal": "{{ value }} kcal",
+      "protein": "{{ value }}g protein",
+      "from_price": "From {{ price }}",
+      "regular_price": "Regular price",
+      "sale_price": "Sale price",
+      "add_named": "Add {{ product }} to cart",
+      "view": "View product",
+      "taxes_included": "Tax included.",
+      "shipping_at_checkout": "Shipping calculated at checkout.",
+      "heat_label": "Heat",
+      "purchase_options": "Purchase options",
+      "one_time": "One-time purchase",
+      "energy": "Energy",
+      "protein_label": "Protein",
+      "gallery": "Product images",
+      "show_image": "Show image {{ number }}",
+      "zoom": "Open image full size",
+      "choose": "Choose",
+      "choose_named": "Choose options for {{ product }}",
+      "view_named": "View {{ product }}",
+      "full_details": "View full details",
+      "quick_view_named": "Quick view: {{ product }}"
+    },
+    "delivery": {
+      "tomorrow": "tomorrow"
+    }
+  },
+  "collections": {
+    "general": {
+      "empty": "No products in this collection yet.",
+      "sort_by": "Sort by",
+      "products_count": {
+        "one": "{{ count }} product",
+        "other": "{{ count }} products"
+      }
+    },
+    "filters": {
+      "title": "Filter",
+      "clear": "Clear all",
+      "from": "From",
+      "to": "To",
+      "apply": "Apply",
+      "title_sort": "Filter and sort",
+      "show_results": "Show results ({{ count }})",
+      "remove": "Remove filter: {{ filter }}"
+    }
+  },
+  "blogs": {
+    "article": {
+      "read_time": "{{ minutes }} min read",
+      "back_to_blog": "Back to {{ title }}",
+      "by": "By {{ author }}"
+    }
+  },
+  "cart": {
+    "title": "Your cart",
+    "empty": "Your cart is empty",
+    "subtotal": "Subtotal",
+    "checkout": "Check out",
+    "view_cart": "View cart",
+    "remove": "Remove",
+    "remove_named": "Remove {{ product }}",
+    "note": "Order note",
+    "taxes_and_shipping": "Taxes and shipping calculated at checkout",
+    "product": "Product",
+    "quantity": "Quantity",
+    "total": "Total",
+    "free_shipping_remaining": "You're {{ amount }} away from free delivery",
+    "free_shipping_unlocked": "You've unlocked free delivery",
+    "free_shipping_progress": "Progress towards free delivery"
+  },
+  "templates": {
+    "404": {
+      "title": "Page not found",
+      "subtitle": "The page you were looking for doesn't exist or has moved."
+    }
+  },
+  "gift_cards": {
+    "issued": {
+      "title": "Here's your {{ value }} gift card for {{ shop }}",
+      "code": "Gift card code",
+      "expired": "Expired",
+      "expires_on": "Expires {{ expiry }}",
+      "copy": "Copy code",
+      "print": "Print",
+      "shop_link": "Visit online store"
+    }
+  },
+  "contact": {
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "message": "Message",
+    "send": "Send message",
+    "success": "Thanks for getting in touch. We'll reply soon."
+  },
+  "customer": {
+    "fields": {
+      "email": "Email",
+      "password": "Password",
+      "password_confirm": "Confirm password",
+      "first_name": "First name",
+      "last_name": "Last name",
+      "company": "Company",
+      "address1": "Address",
+      "address2": "Apartment, suite, etc.",
+      "city": "City",
+      "zip": "Postcode",
+      "country": "Country",
+      "province": "County",
+      "phone": "Phone"
+    },
+    "login": {
+      "title": "Log in",
+      "submit": "Log in",
+      "forgot": "Forgot your password?",
+      "create": "Create an account",
+      "guest": "Continue as guest"
+    },
+    "recover": {
+      "title": "Reset your password",
+      "submit": "Send reset link",
+      "success": "We've sent you an email with a link to reset your password."
+    },
+    "register": {
+      "title": "Create account",
+      "submit": "Create account"
+    },
+    "account": {
+      "title": "Your account",
+      "logout": "Log out",
+      "orders": "Order history",
+      "no_orders": "You haven't placed any orders yet.",
+      "details": "Account details",
+      "addresses": "View addresses ({{ count }})"
+    },
+    "order": {
+      "title": "Order {{ name }}",
+      "order": "Order",
+      "date": "Date",
+      "status": "Status",
+      "back": "Back to account",
+      "cancelled": "Cancelled",
+      "billing": "Billing address",
+      "shipping": "Shipping address"
+    },
+    "addresses": {
+      "title": "Your addresses",
+      "default": "Default",
+      "edit": "Edit",
+      "delete": "Delete",
+      "add": "Add a new address",
+      "save": "Save address",
+      "set_default": "Set as default address"
+    },
+    "activate": {
+      "title": "Activate account",
+      "submit": "Activate account"
+    },
+    "reset": {
+      "title": "Reset password",
+      "submit": "Reset password"
+    }
+  },
+  "sections": {
+    "visit": {
+      "directions": "Get directions",
+      "map_title": "Map showing {{ address }}"
+    }
+  }
+}

@@ -1,0 +1,32 @@
+<section class="section" style="--pt: 0.4; --pb: 0.6;">
+  <div class="page-width" style="max-width: 960px;">
+    <h1 class="h1" style="margin-bottom: 32px;">{{ 'cart.title' | t }}</h1>
+    {%- if cart.item_count > 0 -%}
+      <div style="max-width: 480px; margin-bottom: 24px;">{% render 'free-shipping' %}</div>
+      <form action="{{ routes.cart_url }}" method="post" id="CartForm">
+        {%- for item in cart.items -%}
+          {% render 'cart-item', item: item, index: forloop.index %}
+        {%- endfor -%}
+        <div class="split" style="margin-top: 32px; align-items: flex-start;">
+          <div class="field">
+            <label for="CartNote">{{ 'cart.note' | t }}</label>
+            <textarea id="CartNote" name="note">{{ cart.note }}</textarea>
+          </div>
+          <div class="stack" style="--gap: 12px;">
+            <div class="totals"><span>{{ 'cart.subtotal' | t }}</span><span>{{ cart.total_price | money_with_currency }}</span></div>
+            <p class="muted" style="margin: 0; font-size: .875rem;">{{ 'cart.taxes_and_shipping' | t }}</p>
+            <button type="submit" name="checkout" class="btn btn--full">{{ 'cart.checkout' | t }}</button>
+            {%- if additional_checkout_buttons -%}<div>{{ content_for_additional_checkout_buttons }}</div>{%- endif -%}
+          </div>
+        </div>
+      </form>
+    {%- else -%}
+      <p class="lede">{{ 'cart.empty' | t }}</p>
+      <p style="margin-top: 24px;"><a class="btn" href="{{ routes.all_products_collection_url }}">{{ 'general.continue_shopping' | t }}</a></p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Cart", "settings": [] }
+{% endschema %}

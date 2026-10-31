@@ -1,0 +1,27 @@
+<section class="section" style="--pt: .5; --pb: .75;">
+  <div class="page-width stack" style="--gap: 24px; max-width: 820px;">
+    <a href="{{ routes.account_url }}" class="link-underline" style="align-self: flex-start;">{{ 'customer.order.back' | t }}</a>
+    <h1 class="h1">{{ 'customer.addresses.title' | t }}</h1>
+    {%- paginate customer.addresses by 10 -%}
+      {%- for address in customer.addresses -%}
+        <div class="card" style="padding: 24px;">
+          {%- if address == customer.default_address -%}<p class="label">{{ 'customer.addresses.default' | t }}</p>{%- endif -%}
+          <p>{{ address | format_address }}</p>
+          <details class="accordion"><summary><span>{{ 'customer.addresses.edit' | t }}</span>{% render 'icon', name: 'plus', class: 'accordion__icon' %}</summary>
+            <div class="accordion__body">{%- form 'customer_address', address -%}{% render 'address-fields', form: form, id: address.id %}{%- endform -%}</div>
+          </details>
+          <form method="post" action="{{ routes.account_addresses_url }}/{{ address.id }}" style="margin-top: 8px;"><input type="hidden" name="_method" value="delete"><button type="submit" class="cart-remove">{{ 'customer.addresses.delete' | t }}</button></form>
+        </div>
+      {%- endfor -%}
+      {% render 'pagination', paginate: paginate %}
+    {%- endpaginate -%}
+    <details class="accordion" {% if customer.addresses_count == 0 %}open{% endif %}>
+      <summary><span>{{ 'customer.addresses.add' | t }}</span>{% render 'icon', name: 'plus', class: 'accordion__icon' %}</summary>
+      <div class="accordion__body">{%- form 'customer_address', customer.new_address -%}{% render 'address-fields', form: form, id: 'new' %}{%- endform -%}</div>
+    </details>
+  </div>
+</section>
+
+{% schema %}
+{ "name": "Addresses", "settings": [] }
+{% endschema %}

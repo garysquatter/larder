@@ -1,0 +1,77 @@
+{
+  "sections": {
+    "story": {
+      "type": "image-with-text",
+      "settings": {
+        "image_position": "left",
+        "ratio": "4 / 5",
+        "image_shape": "theme",
+        "eyebrow": "Our story",
+        "heading": "Made in small batches since day one.",
+        "text": "<p>Tell your story here: who started it, what you make and why it matters. Keep it honest and specific.</p>",
+        "link_label": "",
+        "color_scheme": "scheme-1",
+        "padding_top": "0.5",
+        "padding_bottom": "0.5",
+        "image": "shopify://shop_images/larder-story.jpg"
+      }
+    },
+    "quote": {
+      "type": "quote",
+      "settings": {
+        "quote": "A great sauce isn't complicated. Real chillies, real patience, and the courage to keep it simple.",
+        "author": "Founder name · Founder",
+        "show_icon": false,
+        "color_scheme": "scheme-3",
+        "padding_top": "0.75",
+        "padding_bottom": "0.75"
+      }
+    },
+    "promises": {
+      "type": "promises",
+      "settings": {
+        "lines": true,
+        "align": "left",
+        "color_scheme": "scheme-1",
+        "padding_top": "0.5",
+        "padding_bottom": "0.75"
+      },
+      "blocks": {
+        "p1": {
+          "type": "promise",
+          "settings": {
+            "icon": "none",
+            "title": "Real ingredients",
+            "text": "No extracts, no shortcuts."
+          }
+        },
+        "p2": {
+          "type": "promise",
+          "settings": {
+            "icon": "none",
+            "title": "Small batches",
+            "text": "Made by hand, batch-dated."
+          }
+        },
+        "p3": {
+          "type": "promise",
+          "settings": {
+            "icon": "none",
+            "title": "Made in the UK",
+            "text": "From our kitchen to your door."
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3"
+      ]
+    }
+  },
+  "order": [
+    "story",
+    "quote",
+    "promises"
+  ]
+}

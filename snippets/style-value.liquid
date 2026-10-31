@@ -1,0 +1,108 @@
+{%- comment -%}
+  Returns a style value for the active style preset.
+  Usage: {%- capture hero_layout -%}{% render 'style-value', key: 'hero_layout' %}{%- endcapture -%}
+  With "Custom" selected, the value comes from Theme settings.
+{%- endcomment -%}
+{%- liquid
+  assign p = settings.style_preset
+  if p == 'custom' or p == blank
+    assign key_out = 'custom'
+  else
+    assign key_out = key
+  endif
+  case key_out
+    when 'custom'
+      echo settings[key]
+    when 'hero_layout'
+      case p
+        when 'artisan'
+          echo 'split'
+        when 'fresh'
+          echo 'centered'
+        else
+          echo 'full'
+      endcase
+    when 'feature_image_shape'
+      if p == 'artisan'
+        echo 'arch'
+      else
+        echo 'default'
+      endif
+    when 'category_style'
+      if p == 'artisan'
+        echo 'circles'
+      else
+        echo 'tiles'
+      endif
+    when 'heading_font'
+      case p
+        when 'artisan'
+          echo 'fraunces'
+        when 'fresh'
+          echo 'bricolage'
+        else
+          echo 'bebas'
+      endcase
+    when 'heading_case'
+      if p == 'street'
+        echo 'uppercase'
+      else
+        echo 'none'
+      endif
+    when 'heading_letter_spacing'
+      case p
+        when 'artisan'
+          echo -2
+        when 'fresh'
+          echo -4
+        else
+          echo 1
+      endcase
+    when 'label_font'
+      if p == 'street'
+        echo 'mono'
+      else
+        echo 'body'
+      endif
+    when 'label_case'
+      if p == 'fresh'
+        echo 'none'
+      else
+        echo 'uppercase'
+      endif
+    when 'button_style'
+      if p == 'street'
+        echo 'square'
+      else
+        echo 'pill'
+      endif
+    when 'card_radius'
+      case p
+        when 'artisan'
+          echo 12
+        when 'fresh'
+          echo 24
+        else
+          echo 0
+      endcase
+    when 'image_radius'
+      case p
+        when 'artisan'
+          echo 12
+        when 'fresh'
+          echo 24
+        else
+          echo 0
+      endcase
+    when 'header_layout'
+      echo 'left'
+    when 'section_spacing'
+      if p == 'artisan'
+        echo 120
+      else
+        echo 112
+      endif
+    else
+      echo settings[key]
+  endcase
+-%}
