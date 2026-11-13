@@ -57,7 +57,7 @@ Full documentation: [rawcode.online/free-shopify-themes/larder](https://rawcode.
 
 ## Licence
 
-Free for your own and client stores, including commercial ones, as long as the "Theme by Rawcode" footer credit stays visible. Reselling or redistributing the theme is not allowed. A white-label licence (99 EUR per store) removes the credit requirement. See [LICENSE.txt](LICENSE.txt).
+Free for your own and client stores, including commercial ones, as long as the "Theme by Rawcode" footer credit stays visible. Reselling or redistributing the theme is not allowed. A white-label licence (99 EUR per store, non-refundable) removes the credit requirement. See [LICENSE.txt](LICENSE.txt).
 
 ## Questions and help
 
